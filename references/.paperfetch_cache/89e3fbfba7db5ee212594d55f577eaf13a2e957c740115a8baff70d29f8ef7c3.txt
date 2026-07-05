@@ -1,0 +1,78 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<feed xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/" xmlns:arxiv="http://arxiv.org/schemas/atom" xmlns="http://www.w3.org/2005/Atom">
+  <id>https://arxiv.org/api/Y4HYExxEVQ9j3FMLMPpvH1yEZrA</id>
+  <title>arXiv Query: search_query=ti:latent OR all:gaussian OR all:processes OR all:for OR all:distribution OR all:estimation OR all:of OR all:multivariate OR all:categorical OR all:data&amp;id_list=&amp;start=0&amp;max_results=3</title>
+  <updated>2026-07-02T23:19:12Z</updated>
+  <link href="https://arxiv.org/api/query?search_query=ti:latent+OR+(all:gaussian+OR+(all:processes+OR+(all:for+OR+(all:distribution+OR+(all:estimation+OR+(all:of+OR+(all:multivariate+OR+(all:categorical+OR+all:data))))))))&amp;start=0&amp;max_results=3&amp;id_list=" type="application/atom+xml"/>
+  <opensearch:itemsPerPage>3</opensearch:itemsPerPage>
+  <opensearch:totalResults>1358781</opensearch:totalResults>
+  <opensearch:startIndex>0</opensearch:startIndex>
+  <entry>
+    <id>http://arxiv.org/abs/1503.02182v1</id>
+    <title>Latent Gaussian Processes for Distribution Estimation of Multivariate Categorical Data</title>
+    <updated>2015-03-07T14:53:39Z</updated>
+    <link href="https://arxiv.org/abs/1503.02182v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/1503.02182v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Multivariate categorical data occur in many applications of machine learning. One of the main difficulties with these vectors of categorical variables is sparsity. The number of possible observations grows exponentially with vector length, but dataset diversity might be poor in comparison. Recent models have gained significant improvement in supervised tasks with this data. These models embed observations in a continuous space to capture similarities between them. Building on these ideas we propose a Bayesian model for the unsupervised task of distribution estimation of multivariate categorical data. We model vectors of categorical variables as generated from a non-linear transformation of a continuous latent space. Non-linearity captures multi-modality in the distribution. The continuous representation addresses sparsity. Our model ties together many existing models, linking the linear categorical latent Gaussian model, the Gaussian process latent variable model, and Gaussian process classification. We derive inference for our model based on recent developments in sampling based variational inference. We show empirically that the model outperforms its linear and discrete counterparts in imputation tasks of sparse data.</summary>
+    <category term="stat.ML" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2015-03-07T14:53:39Z</published>
+    <arxiv:comment>11 pages, 6 figures</arxiv:comment>
+    <arxiv:primary_category term="stat.ML"/>
+    <author>
+      <name>Yarin Gal</name>
+    </author>
+    <author>
+      <name>Yutian Chen</name>
+    </author>
+    <author>
+      <name>Zoubin Ghahramani</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/1907.02664v2</id>
+    <title>Data Encoding for Byzantine-Resilient Distributed Optimization</title>
+    <updated>2020-11-04T05:57:11Z</updated>
+    <link href="https://arxiv.org/abs/1907.02664v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/1907.02664v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>We study distributed optimization in the presence of Byzantine adversaries, where both data and computation are distributed among $m$ worker machines, $t$ of which may be corrupt. The compromised nodes may collaboratively and arbitrarily deviate from their pre-specified programs, and a designated (master) node iteratively computes the model/parameter vector for generalized linear models. In this work, we primarily focus on two iterative algorithms: Proximal Gradient Descent (PGD) and Coordinate Descent (CD). Gradient descent (GD) is a special case of these algorithms. PGD is typically used in the data-parallel setting, where data is partitioned across different samples, whereas, CD is used in the model-parallelism setting, where data is partitioned across the parameter space.
+  In this paper, we propose a method based on data encoding and error correction over real numbers to combat adversarial attacks. We can tolerate up to $t\leq \lfloor\frac{m-1}{2}\rfloor$ corrupt worker nodes, which is information-theoretically optimal. We give deterministic guarantees, and our method does not assume any probability distribution on the data. We develop a {\em sparse} encoding scheme which enables computationally efficient data encoding and decoding. We demonstrate a trade-off between the corruption threshold and the resource requirements (storage, computational, and communication complexity). As an example, for $t\leq\frac{m}{3}$, our scheme incurs only a {\em constant} overhead on these resources, over that required by the plain distributed PGD/CD algorithms which provide no adversarial protection. To the best of our knowledge, ours is the first paper that makes CD secure against adversarial attacks.
+  Our encoding scheme extends efficiently to the data streaming model and for stochastic gradient descent (SGD). We also give experimental results to show the efficacy of our proposed schemes.</summary>
+    <category term="cs.DC" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CR" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2019-07-05T03:31:43Z</published>
+    <arxiv:comment>38 pages, Accepted for publication in the IEEE Transactions on Information Theory</arxiv:comment>
+    <arxiv:primary_category term="cs.DC"/>
+    <author>
+      <name>Deepesh Data</name>
+    </author>
+    <author>
+      <name>Linqi Song</name>
+    </author>
+    <author>
+      <name>Suhas Diggavi</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/1209.0952v1</id>
+    <title>Parametric estimation of the driving Lévy process of multivariate CARMA processes from discrete observations</title>
+    <updated>2012-09-05T12:49:26Z</updated>
+    <link href="https://arxiv.org/abs/1209.0952v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/1209.0952v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>We consider the parametric estimation of the driving Lévy process of a multivariate continuous-time autoregressive moving average (MCARMA) process, which is observed on the discrete time grid $(0,h,2h,...)$. Beginning with a new state space representation, we develop a method to recover the driving Lévy process exactly from a continuous record of the observed MCARMA process. We use tools from numerical analysis and the theory of infinitely divisible distributions to extend this result to allow for the approximate recovery of unit increments of the driving Lévy process from discrete-time observations of the MCARMA process. We show that, if the sampling interval $h=h_N$ is chosen dependent on $N$, the length of the observation horizon, such that $N h_N$ converges to zero as $N$ tends to infinity, then any suitable generalized method of moments estimator based on this reconstructed sample of unit increments has the same asymptotic distribution as the one based on the true increments, and is, in particular, asymptotically normally distributed.</summary>
+    <category term="math.PR" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="math.ST" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2012-09-05T12:49:26Z</published>
+    <arxiv:comment>38 pages, four figures; to appear in Journal of Multivariate Analysis</arxiv:comment>
+    <arxiv:primary_category term="math.PR"/>
+    <arxiv:journal_ref>2013, Journal of Multivariate Analysis, 115, pp 217-251</arxiv:journal_ref>
+    <author>
+      <name>Peter J. Brockwell</name>
+    </author>
+    <author>
+      <name>Eckhard Schlemm</name>
+    </author>
+    <arxiv:doi>10.1016/j.jmva.2012.09.004</arxiv:doi>
+    <link rel="related" href="https://doi.org/10.1016/j.jmva.2012.09.004" title="doi"/>
+  </entry>
+</feed>

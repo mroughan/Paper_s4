@@ -1,0 +1,90 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<feed xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/" xmlns:arxiv="http://arxiv.org/schemas/atom" xmlns="http://www.w3.org/2005/Atom">
+  <id>https://arxiv.org/api/ytKAagMHp9s35qh33DHzvcLu5nk</id>
+  <title>arXiv Query: search_query=ti:factorized OR all:recurrent OR all:neural OR all:architectures OR all:for OR all:longer OR all:range OR all:dependence&amp;id_list=&amp;start=0&amp;max_results=3</title>
+  <updated>2026-07-02T23:17:09Z</updated>
+  <link href="https://arxiv.org/api/query?search_query=ti:factorized+OR+(all:recurrent+OR+(all:neural+OR+(all:architectures+OR+(all:for+OR+(all:longer+OR+(all:range+OR+all:dependence))))))&amp;start=0&amp;max_results=3&amp;id_list=" type="application/atom+xml"/>
+  <opensearch:itemsPerPage>3</opensearch:itemsPerPage>
+  <opensearch:totalResults>884977</opensearch:totalResults>
+  <opensearch:startIndex>0</opensearch:startIndex>
+  <entry>
+    <id>http://arxiv.org/abs/2502.01654v1</id>
+    <title>Predicting concentration levels of air pollutants by transfer learning and recurrent neural network</title>
+    <updated>2025-01-30T23:39:19Z</updated>
+    <link href="https://arxiv.org/abs/2502.01654v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2502.01654v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Air pollution (AP) poses a great threat to human health, and people are paying more attention than ever to its prediction. Accurate prediction of AP helps people to plan for their outdoor activities and aids protecting human health. In this paper, long-short term memory (LSTM) recurrent neural networks (RNNs) have been used to predict the future concentration of air pollutants (APS) in Macau. Additionally, meteorological data and data on the concentration of APS have been utilized. Moreover, in Macau, some air quality monitoring stations (AQMSs) have less observed data in quantity, and, at the same time, some AQMSs recorded less observed data of certain types of APS. Therefore, the transfer learning and pre-trained neural networks have been employed to assist AQMSs with less observed data to build a neural network with high prediction accuracy. The experimental sample covers a period longer than 12-year and includes daily measurements from several APS as well as other more classical meteorological values. Records from five stations, four out of them are AQMSs and the remaining one is an automatic weather station, have been prepared from the aforesaid period and eventually underwent to computational intelligence techniques to build and extract a prediction knowledge-based system. As shown by experimentation, LSTM RNNs initialized with transfer learning methods have higher prediction accuracy; it incurred shorter training time than randomly initialized recurrent neural networks.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.NE" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="physics.ao-ph" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2025-01-30T23:39:19Z</published>
+    <arxiv:comment>Forecasting, environment monitoring, transfer learning, recurrent neural network, airborne particle matter</arxiv:comment>
+    <arxiv:primary_category term="cs.LG"/>
+    <arxiv:journal_ref>Fong, I. H., Li, T., Fong, S., Wong, R. K., &amp; Tallon-Ballesteros, A. J. (2020). Predicting concentration levels of air pollutants by transfer learning and recurrent neural network. Knowledge-Based Systems, 192, 105622</arxiv:journal_ref>
+    <author>
+      <name>Iat Hang Fong</name>
+    </author>
+    <author>
+      <name>Tengyue Li</name>
+    </author>
+    <author>
+      <name>Simon Fong</name>
+    </author>
+    <author>
+      <name>Raymond K. Wong</name>
+    </author>
+    <author>
+      <name>Antonio J. Tallón-Ballesteros</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2301.04794v1</id>
+    <title>LiteLSTM Architecture Based on Weights Sharing for Recurrent Neural Networks</title>
+    <updated>2023-01-12T03:39:59Z</updated>
+    <link href="https://arxiv.org/abs/2301.04794v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2301.04794v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Long short-term memory (LSTM) is one of the robust recurrent neural network architectures for learning sequential data. However, it requires considerable computational power to learn and implement both software and hardware aspects. This paper proposed a novel LiteLSTM architecture based on reducing the LSTM computation components via the weights sharing concept to reduce the overall architecture computation cost and maintain the architecture performance. The proposed LiteLSTM can be significant for processing large data where time-consuming is crucial while hardware resources are limited, such as the security of IoT devices and medical data processing. The proposed model was evaluated and tested empirically on three different datasets from the computer vision, cybersecurity, speech emotion recognition domains. The proposed LiteLSTM has comparable accuracy to the other state-of-the-art recurrent architecture while using a smaller computation budget.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2023-01-12T03:39:59Z</published>
+    <arxiv:comment>Under the second reviewing round in the SN Computer Science Journal. Extended version of the LiteLSTM Architecture for Deep Recurrent Neural Networks paper that have been published in the IEEE ISCAS 2022 conference. arXiv admin note: substantial text overlap with arXiv:2201.11624</arxiv:comment>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Nelly Elsayed</name>
+    </author>
+    <author>
+      <name>Zag ElSayed</name>
+    </author>
+    <author>
+      <name>Anthony S. Maida</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/1805.03886v1</id>
+    <title>Effect of dilution in asymmetric recurrent neural networks</title>
+    <updated>2018-05-10T08:41:27Z</updated>
+    <link href="https://arxiv.org/abs/1805.03886v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/1805.03886v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>We study with numerical simulation the possible limit behaviors of synchronous discrete-time deterministic recurrent neural networks composed of N binary neurons as a function of a network's level of dilution and asymmetry. The network dilution measures the fraction of neuron couples that are connected, and the network asymmetry measures to what extent the underlying connectivity matrix is asymmetric. For each given neural network, we study the dynamical evolution of all the different initial conditions, thus characterizing the full dynamical landscape without imposing any learning rule. Because of the deterministic dynamics, each trajectory converges to an attractor, that can be either a fixed point or a limit cycle. These attractors form the set of all the possible limit behaviors of the neural network. For each network, we then determine the convergence times, the limit cycles' length, the number of attractors, and the sizes of the attractors' basin. We show that there are two network structures that maximize the number of possible limit behaviors. The first optimal network structure is fully-connected and symmetric. On the contrary, the second optimal network structure is highly sparse and asymmetric. The latter optimal is similar to what observed in different biological neuronal circuits. These observations lead us to hypothesize that independently from any given learning model, an efficient and effective biologic network that stores a number of limit behaviors close to its maximum capacity tends to develop a connectivity structure similar to one of the optimal networks we found.</summary>
+    <category term="cond-mat.dis-nn" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.NE" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="q-bio.NC" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2018-05-10T08:41:27Z</published>
+    <arxiv:comment>31 pages, 5 figures</arxiv:comment>
+    <arxiv:primary_category term="cond-mat.dis-nn"/>
+    <arxiv:journal_ref>Folli, V., Gosti, G., Leonetti, M., Ruocco, G., Effect of dilution in asymmetric recurrent neural networks. Neural Networks (2018)</arxiv:journal_ref>
+    <author>
+      <name>Viola Folli</name>
+    </author>
+    <author>
+      <name>Giorgio Gosti</name>
+    </author>
+    <author>
+      <name>Marco Leonetti</name>
+    </author>
+    <author>
+      <name>Giancarlo Ruocco</name>
+    </author>
+    <arxiv:doi>10.1016/J.NEUNET.2018.04.003</arxiv:doi>
+    <link rel="related" href="https://doi.org/10.1016/J.NEUNET.2018.04.003" title="doi"/>
+  </entry>
+</feed>

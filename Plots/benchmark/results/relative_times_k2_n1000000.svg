@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="582" viewBox="0 0 1200 582">
+<rect width="100%" height="100%" fill="white"/>
+<text x="600.0" y="30" text-anchor="middle" font-family="sans-serif" font-size="22">Relative generation time, k=2, n=1000000</text>
+<text x="600.0" y="52" text-anchor="middle" font-family="sans-serif" font-size="13">Bars are normalized to the fastest method in this benchmark slice</text>
+<text x="288" y="91" text-anchor="end" font-family="sans-serif" font-size="12">MB2</text>
+<rect x="300" y="76" width="5.43" height="20" fill="#1f77b4"/>
+<text x="313.42654227253155" y="91" font-family="sans-serif" font-size="12">1.0x (8.164 ms)</text>
+<text x="288" y="125" text-anchor="end" font-family="sans-serif" font-size="12">MB3</text>
+<rect x="300" y="110" width="12.58" height="20" fill="#ff7f0e"/>
+<text x="320.5786892731864" y="125" font-family="sans-serif" font-size="12">2.32x (18.925 ms)</text>
+<text x="288" y="159" text-anchor="end" font-family="sans-serif" font-size="12">MB5</text>
+<rect x="300" y="144" width="14.87" height="20" fill="#2ca02c"/>
+<text x="322.87140304086904" y="159" font-family="sans-serif" font-size="12">2.74x (22.375 ms)</text>
+<text x="288" y="193" text-anchor="end" font-family="sans-serif" font-size="12">PB4</text>
+<rect x="300" y="178" width="68.52" height="20" fill="#d62728"/>
+<text x="376.5170039102889" y="193" font-family="sans-serif" font-size="12">12.63x (103.087 ms)</text>
+<text x="288" y="227" text-anchor="end" font-family="sans-serif" font-size="12">PB2</text>
+<rect x="300" y="212" width="74.99" height="20" fill="#9467bd"/>
+<text x="382.98944005789656" y="227" font-family="sans-serif" font-size="12">13.82x (112.825 ms)</text>
+<text x="288" y="261" text-anchor="end" font-family="sans-serif" font-size="12">PB1</text>
+<rect x="300" y="246" width="77.16" height="20" fill="#8c564b"/>
+<text x="385.16082845503263" y="261" font-family="sans-serif" font-size="12">14.22x (116.092 ms)</text>
+<text x="288" y="295" text-anchor="end" font-family="sans-serif" font-size="12">PB3</text>
+<rect x="300" y="280" width="90.91" height="20" fill="#e377c2"/>
+<text x="398.91485988491837" y="295" font-family="sans-serif" font-size="12">16.75x (136.786 ms)</text>
+<text x="288" y="329" text-anchor="end" font-family="sans-serif" font-size="12">MB1a</text>
+<rect x="300" y="314" width="123.96" height="20" fill="#7f7f7f"/>
+<text x="431.96347157264023" y="329" font-family="sans-serif" font-size="12">22.84x (186.509 ms)</text>
+<text x="288" y="363" text-anchor="end" font-family="sans-serif" font-size="12">MB4a</text>
+<rect x="300" y="348" width="126.69" height="20" fill="#bcbd22"/>
+<text x="434.6938658384223" y="363" font-family="sans-serif" font-size="12">23.35x (190.617 ms)</text>
+<text x="288" y="397" text-anchor="end" font-family="sans-serif" font-size="12">MB4b</text>
+<rect x="300" y="382" width="127.48" height="20" fill="#17becf"/>
+<text x="435.47894071090445" y="397" font-family="sans-serif" font-size="12">23.49x (191.798 ms)</text>
+<text x="288" y="431" text-anchor="end" font-family="sans-serif" font-size="12">MB1c</text>
+<rect x="300" y="416" width="143.34" height="20" fill="#4c78a8"/>
+<text x="451.33545467280294" y="431" font-family="sans-serif" font-size="12">26.41x (215.655 ms)</text>
+<text x="288" y="465" text-anchor="end" font-family="sans-serif" font-size="12">MB1b</text>
+<rect x="300" y="450" width="265.21" height="20" fill="#1f77b4"/>
+<text x="573.2079036426346" y="465" font-family="sans-serif" font-size="12">48.87x (399.018 ms)</text>
+<text x="288" y="499" text-anchor="end" font-family="sans-serif" font-size="12">MB4c</text>
+<rect x="300" y="484" width="770.0" height="20" fill="#ff7f0e"/>
+<text x="1078.0" y="499" font-family="sans-serif" font-size="12">141.9x (1158.501 ms)</text>
+<text x="685.0" y="560" text-anchor="middle" font-family="sans-serif" font-size="14">relative time, fastest = 1x</text>
+</svg>

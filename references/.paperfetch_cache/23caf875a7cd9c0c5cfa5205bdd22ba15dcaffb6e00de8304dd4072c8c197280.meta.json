@@ -1,0 +1,1 @@
+{"headers":{"User-Agent":"PaperFetch.jl/0.2.0 (https://github.com/mroughan/PaperFetch.jl)"},"format":"json","url":"https://api.semanticscholar.org/graph/v1/paper/DOI:10.1073%2Fpnas.1117723109?fields=paperId,title,authors,year,externalIds,url,venue,journal,openAccessPdf","cached_at":"2026-07-03T08:46:46.183"}

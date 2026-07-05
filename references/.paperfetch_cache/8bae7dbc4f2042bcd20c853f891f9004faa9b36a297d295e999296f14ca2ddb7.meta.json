@@ -1,0 +1,1 @@
+{"headers":{"User-Agent":"PaperFetch.jl/0.2.0 (https://github.com/mroughan/PaperFetch.jl)"},"format":"json","url":"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=10.1239%2Fjap%2F1197908823%5BAID%5D&retmode=json&retmax=3&tool=PaperFetch&email=matthew.roughan%40adelaide.edu.au","cached_at":"2026-07-03T08:48:16.809"}

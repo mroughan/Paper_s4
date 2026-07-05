@@ -1,0 +1,121 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{hyperref}
+
+\title{Annotated Bibliography for SymbolicLongMemorySequences.jl}
+\author{Matthew Roughan and collaborators}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section{Purpose}
+
+This document records the literature foundation for SymbolicLongMemorySequences.jl, a Julia package for
+synthesizing long-range dependent symbolic sequences. The accompanying BibTeX
+database is \path{references/s5_references.bib}. Downloaded PDFs are stored
+outside this public repository in the private sibling repository described in
+\path{DOWNLOAD.mn}; this document and \path{references/README.md} retain
+human-readable provenance and interpretation.
+
+The BibTeX file has also been checked with PaperFetch.jl in online
+check-only mode. Clear DOI/title/author conflicts were corrected in the
+database, while low-confidence provider failures for books, proceedings, and
+known local alternatives remain recorded as audit items rather than overwritten.
+
+\section{Long-Range Dependence and Self-Similarity}
+
+The general mathematical background comes from Samorodnitsky's survey
+\cite{samorodnitsky2006_long}, Pipiras and Taqqu's monograph
+\cite{pipiras2017_long}, and Beran's statistical treatment
+\cite{beran1994_statistics}. These references distinguish covariance-based
+long memory, spectral poles, heavy tails, self-similarity, and finite-sample
+estimation. SymbolicLongMemorySequences.jl uses those distinctions to avoid presenting a finite
+simulation as proof of asymptotic LRD.
+
+The network-traffic literature, especially Leland et al.
+\cite{leland1994_on} and Willinger, Paxson, and Taqqu
+\cite{willinger1998_self}, motivates the practical need for synthetic data that
+preserves large-scale burstiness. Taqqu, Teverovsky, and Willinger
+\cite{taqqu1995_estimators}, Witt and Malamud \cite{witt2013_quantification},
+and Malamud and Turcotte \cite{malamud1999_self} are used as cautions about
+estimator dependence, finite scale ranges, trends, and diagnostic choices.
+
+\section{Numerical LRD Synthesis}
+
+Paxson's fast spectral synthesis \cite{paxson1997_fast} is the direct ancestor
+of PB1 and the default numerical source for PB2 and PB3. Dieker
+\cite{dieker2004_simulation}, Coeurjolly \cite{coeurjolly2000_simulation},
+Wood and Chan \cite{wood1994_simulation}, Dietrich and Newsam
+\cite{dietrich1997_fast}, and Craigmile \cite{craigmile2000_simulating}
+document exact and approximate Gaussian alternatives. These references support
+the current SymbolicLongMemorySequences.jl design choice: keep latent numerical generation explicit, so
+future exact covariance backends can be added without changing the symbolic
+transformation API.
+
+Sorbye, Myrvoll-Nilsen, and Rue \cite{sorbye2017_an} show another scalable path
+through finite mixtures of short-memory components. Roughan, Veitch, and Abry
+\cite{roughan2000_real} provide the wavelet and multiscale background behind
+PB3, which SymbolicLongMemorySequences.jl modifies into a latent-driver plus Markov-regime symbolic
+generator.
+
+\section{Point Processes and Heavy-Tailed Models}
+
+Heavy-tailed and fractal point-process generators are represented by Garrett and
+Willinger \cite{garrett1994_analysis}, Lowen and Teich
+\cite{lowen1995_estimation}, Thurner et al. \cite{thurner1997_analysis}, and
+Ryu and Lowen \cite{ryu1998_point}. SymbolicLongMemorySequences.jl adapts this line in MB2 through
+heavy-tailed regime sojourns, and in MB3 through competing symbol-specific
+renewal streams. Roughan, Yates, and Veitch \cite{roughan1999_the} motivate the
+validation policy for these methods: finite simulations can miss the intended
+scale range, so plots must mark interpretation limits.
+
+\section{Symbolic and Categorical Applications}
+
+Voss \cite{voss1992_evolution} is central because it analyzes DNA through one
+binary indicator sequence per base, avoiding arbitrary scalar encodings of
+symbols. SymbolicLongMemorySequences.jl's centered one-hot validation diagnostics follow that
+methodological lesson. DNA references including Peng et al.
+\cite{peng1992_long}, Li and Kaneko \cite{li1992_long}, Li, Marr, and Kaneko
+\cite{li1994_understanding}, Buldyrev et al. \cite{buldyrev1998_analysis}, and
+Buldyrev \cite{buldyrev2006_power} motivate symbolic biological use cases and
+copy/mutation generator families.
+
+Text references include Schenkel, Zhang, and Zhang \cite{schenkel1993_long},
+Ebeling and Poschel \cite{ebeling1994_entropy}, Montemurro and Pury
+\cite{montemurro2002_long}, Alvarez-Lacalle et al.
+\cite{alvarez2006_hierarchical}, Altmann et al. \cite{altmann2009_beyond},
+Altmann, Cristadoro, and Degli Esposti \cite{altmann2012_on},
+Tanaka-Ishii and Bunde \cite{tanaka2016_long}, Debowski
+\cite{debowski2015_hilberg}, and Wieczynski and Debowski
+\cite{wieczynski2025_long}. These papers suggest mechanisms such as hierarchy,
+rare-word clustering, topic persistence, and semantic similarity. SymbolicLongMemorySequences.jl does
+not attempt to model text directly; it provides reproducible synthetic
+sequences for studying estimators and sequence models under controlled symbolic
+LRD.
+
+\section{Model Details Used by SymbolicLongMemorySequences.jl}
+
+PB1 combines Paxson-style fGn \cite{paxson1997_fast} with rank quantization.
+PB2 combines fGn streams with an argmax transform inspired by latent Gaussian
+categorical models \cite{gal2015_latent}. PB3 uses a latent spectral or Haar
+driver to select Markov regimes, preserving direct local transition control.
+PB4 uses an intermittent-map source motivated by Provata and Beck
+\cite{provata2012_coupled}.
+
+MB1a and MB1b are based on LAMP \cite{kumar2017_linear}; SymbolicLongMemorySequences.jl adds explicit
+finite-history and dyadic-bucket variants. MB1c follows additive Markov-chain
+memory-function work \cite{melnyk2006_memory,mayzelis2006_additive,melnik2014_entropy}.
+MB2 and MB3 adapt heavy-tailed traffic and point-process models
+\cite{garrett1994_analysis,ryu1998_point,lowen1995_estimation}. MB4 is
+motivated by Hawkes-process word-occurrence modeling \cite{ogura2022_modeling}.
+MB5 is motivated by symbolic DNA growth models
+\cite{koroteev2015_duplication,salgado2012_exact}.
+
+\bibliographystyle{IEEEtran}
+\bibliography{references/s5_references}
+
+\end{document}

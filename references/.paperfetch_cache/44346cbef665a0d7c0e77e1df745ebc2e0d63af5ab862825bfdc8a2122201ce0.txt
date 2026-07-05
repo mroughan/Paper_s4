@@ -1,0 +1,82 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<feed xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/" xmlns:arxiv="http://arxiv.org/schemas/atom" xmlns="http://www.w3.org/2005/Atom">
+  <id>https://arxiv.org/api/L4OqTppbFMUUSXdFDUOg7m26hZg</id>
+  <title>arXiv Query: search_query=ti:additive OR all:markov OR all:chains OR all:with OR all:long OR all:range OR all:correlations&amp;id_list=&amp;start=0&amp;max_results=3</title>
+  <updated>2026-07-02T23:20:59Z</updated>
+  <link href="https://arxiv.org/api/query?search_query=ti:additive+OR+(all:markov+OR+(all:chains+OR+(all:with+OR+(all:long+OR+(all:range+OR+all:correlations)))))&amp;start=0&amp;max_results=3&amp;id_list=" type="application/atom+xml"/>
+  <opensearch:itemsPerPage>3</opensearch:itemsPerPage>
+  <opensearch:totalResults>665859</opensearch:totalResults>
+  <opensearch:startIndex>0</opensearch:startIndex>
+  <entry>
+    <id>http://arxiv.org/abs/2212.14005v2</id>
+    <title>Rowmotion Markov Chains</title>
+    <updated>2023-09-03T10:32:07Z</updated>
+    <link href="https://arxiv.org/abs/2212.14005v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2212.14005v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Rowmotion is a certain well-studied bijective operator on the distributive lattice $J(P)$ of order ideals of a finite poset $P$. We introduce the rowmotion Markov chain ${\bf M}_{J(P)}$ by assigning a probability $p_x$ to each $x\in P$ and using these probabilities to insert randomness into the original definition of rowmotion. More generally, we introduce a very broad family of toggle Markov chains inspired by Striker's notion of generalized toggling. We characterize when toggle Markov chains are irreducible, and we show that each toggle Markov chain has a remarkably simple stationary distribution.
+  We also provide a second generalization of rowmotion Markov chains to the context of semidistrim lattices. Given a semidistrim lattice $L$, we assign a probability $p_j$ to each join-irreducible element $j$ of $L$ and use these probabilities to construct a rowmotion Markov chain ${\bf M}_L$. Under the assumption that each probability $p_j$ is strictly between $0$ and $1$, we prove that ${\bf M}_{L}$ is irreducible. We also compute the stationary distribution of the rowmotion Markov chain of a lattice obtained by adding a minimal element and a maximal element to a disjoint union of two chains.
+  We bound the mixing time of ${\bf M}_{L}$ for an arbitrary semidistrim lattice $L$. In the special case when $L$ is a Boolean lattice, we use spectral methods to obtain much stronger estimates on the mixing time, showing that rowmotion Markov chains of Boolean lattices exhibit the cutoff phenomenon.</summary>
+    <category term="math.CO" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="math.PR" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-12-28T18:25:12Z</published>
+    <arxiv:comment>20 pages, 4 figures. The new version introduces and studies toggle Markov chains and proves cutoff for rowmotion Markov chains of Boolean lattices</arxiv:comment>
+    <arxiv:primary_category term="math.CO"/>
+    <arxiv:journal_ref>Adv. Appl. Math. 155:102666 (2024)</arxiv:journal_ref>
+    <author>
+      <name>Colin Defant</name>
+    </author>
+    <author>
+      <name>Rupert Li</name>
+    </author>
+    <author>
+      <name>Evita Nestoridi</name>
+    </author>
+    <arxiv:doi>10.1016/j.aam.2023.102666</arxiv:doi>
+    <link rel="related" href="https://doi.org/10.1016/j.aam.2023.102666" title="doi"/>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2106.13947v2</id>
+    <title>Optimal prediction of Markov chains with and without spectral gap</title>
+    <updated>2022-05-03T23:36:55Z</updated>
+    <link href="https://arxiv.org/abs/2106.13947v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2106.13947v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>We study the following learning problem with dependent data: Observing a trajectory of length $n$ from a stationary Markov chain with $k$ states, the goal is to predict the next state. For $3 \leq k \leq O(\sqrt{n})$, using techniques from universal compression, the optimal prediction risk in Kullback-Leibler divergence is shown to be $Θ(\frac{k^2}{n}\log \frac{n}{k^2})$, in contrast to the optimal rate of $Θ(\frac{\log \log n}{n})$ for $k=2$ previously shown in Falahatgar et al. (2016). These rates, slower than the parametric rate of $O(\frac{k^2}{n})$, can be attributed to the memory in the data, as the spectral gap of the Markov chain can be arbitrarily small. To quantify the memory effect, we study irreducible reversible chains with a prescribed spectral gap. In addition to characterizing the optimal prediction risk for two states, we show that, as long as the spectral gap is not excessively small, the prediction risk in the Markov model is $O(\frac{k^2}{n})$, which coincides with that of an iid model with the same number of parameters. Extensions to higher-order Markov chains are also obtained.</summary>
+    <category term="math.ST" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2021-06-26T05:18:34Z</published>
+    <arxiv:comment>New results for higher-order Markov chains, 66 pages</arxiv:comment>
+    <arxiv:primary_category term="math.ST"/>
+    <author>
+      <name>Yanjun Han</name>
+    </author>
+    <author>
+      <name>Soham Jana</name>
+    </author>
+    <author>
+      <name>Yihong Wu</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/1403.5496v3</id>
+    <title>Noisy Monte Carlo: Convergence of Markov chains with approximate transition kernels</title>
+    <updated>2014-04-15T15:46:25Z</updated>
+    <link href="https://arxiv.org/abs/1403.5496v3" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/1403.5496v3" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Monte Carlo algorithms often aim to draw from a distribution $π$ by simulating a Markov chain with transition kernel $P$ such that $π$ is invariant under $P$. However, there are many situations for which it is impractical or impossible to draw from the transition kernel $P$. For instance, this is the case with massive datasets, where is it prohibitively expensive to calculate the likelihood and is also the case for intractable likelihood models arising from, for example, Gibbs random fields, such as those found in spatial statistics and network analysis. A natural approach in these cases is to replace $P$ by an approximation $\hat{P}$. Using theory from the stability of Markov chains we explore a variety of situations where it is possible to quantify how 'close' the chain given by the transition kernel $\hat{P}$ is to the chain given by $P$. We apply these results to several examples from spatial statistics and network analysis.</summary>
+    <category term="stat.ME" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2014-03-21T15:38:31Z</published>
+    <arxiv:comment>This version: results extended to non-uniformly ergodic Markov chains</arxiv:comment>
+    <arxiv:primary_category term="stat.ME"/>
+    <author>
+      <name>P. Alquier</name>
+    </author>
+    <author>
+      <name>N. Friel</name>
+    </author>
+    <author>
+      <name>R. Everitt</name>
+    </author>
+    <author>
+      <name>A. Boland</name>
+    </author>
+  </entry>
+</feed>

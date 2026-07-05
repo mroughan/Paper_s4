@@ -1,0 +1,1 @@
+{"headers":{"User-Agent":"PaperFetch.jl/0.2.0 (https://github.com/mroughan/PaperFetch.jl)"},"format":"json","url":"https://api.core.ac.uk/v3/search/works?q=doi%3A%2210.1145%2F2674005.2675012%22&limit=3","cached_at":"2026-07-03T08:47:54.389"}

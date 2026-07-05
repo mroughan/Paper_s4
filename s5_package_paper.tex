@@ -1,0 +1,1396 @@
+\documentclass[journal]{IEEEtran}
+
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage[caption=false,font=footnotesize]{subfig}
+\usepackage{listings}
+\usepackage{url}
+
+\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\pkg}[1]{\texttt{#1}}
+\newcommand{\vect}[1]{\boldsymbol{#1}}
+\newcommand{\sfive}{\pkg{SymbolicLongMemorySequences.jl}}
+\newcommand{\prodacfpath}{Plots/validation/lrd_diagnostics/production/acf}
+\newcommand{\prodspectrumpath}{Plots/validation/lrd_diagnostics/production/spectrum}
+\newcommand{\marginalpath}{Plots/validation/marginal_control}
+\newcommand{\benchpath}{Plots/benchmark/results}
+\lstset{
+  basicstyle=\ttfamily\footnotesize,
+  columns=fullflexible,
+  frame=single,
+  breaklines=true,
+  keepspaces=true,
+  showstringspaces=false
+} 
+
+\usepackage{xspace}
+\newcommand{\ie}{{\em i.e.,}\xspace}
+\newcommand{\eg}{{\em e.g.,}\xspace}
+
+\newcommand{\acfsubfig}[2]{%
+\subfloat[#2]{%
+\IfFileExists{\prodacfpath/#1_symbol_acf.pdf}{%
+  \includegraphics[width=0.275\textwidth]{\prodacfpath/#1_symbol_acf.pdf}%
+}{%
+  \fbox{\parbox{0.255\textwidth}{\centering Missing ACF plot for #2}}%
+}}}
+\newcommand{\benchfig}[3]{%
+\begin{figure}[!t]
+\centering
+\IfFileExists{\benchpath/#1.pdf}{%
+  \includegraphics[width=\columnwidth]{\benchpath/#1.pdf}%
+}{%
+  \fbox{\parbox{0.92\columnwidth}{\centering Missing generated benchmark plot
+  PDF. Run \code{julia --project=benchmark benchmark/benchmarks.jl} in the
+  extended benchmark mode and convert the SVG outputs to PDF.}}%
+}
+\caption{#2}
+\label{fig:#3}
+\end{figure}}
+
+\title{Reproducible Synthesis of Long-Range Dependent Symbolic Sequences in Julia}
+
+\author{Matthew Roughan, Lewis Mitchell, and Cameron Cornell%
+\thanks{The authors are with the School of Mathematical Sciences,
+The University of Adelaide, Adelaide, SA 5005, Australia.
+E-mail: \{matthew.roughan, lewis.mitchell, cameron.cornell\}@adelaide.edu.au.}}
+
+\begin{document}
+\maketitle
+
+
+\begin{abstract}
+Synthetic long-range dependent (LRD) data are useful only when the object being
+synthesized matches the object being tested.  This is already difficult for
+numerical time series; symbolic data add another source of ambiguity.  A DNA
+base, a word, or a security-event class has no natural numerical distance, yet many diagnostics and
+models quietly introduce one.  This paper presents \sfive{} (Self-Similar Symbols
+Sequence Synthesis),\footnote{LRD and statistical self-similarity are closely
+related but not identical: LRD describes persistent dependence, often through a
+non-summable covariance tail or low-frequency spectral pole, while statistical
+self-similarity describes distributional invariance under aggregation or
+rescaling. Many classical models connect them through the Hurst parameter, but
+finite symbolic sequences require method-specific diagnostics.} a Julia package
+for reproducible synthesis of LRD finite-alphabet sequences.  The package
+combines property-based methods, which generate numerical LRD processes and then
+symbolize them, with model-based methods, which generate symbolic dependence
+directly through finite-state, renewal, excitation, or copy/mutation mechanisms.
+The paper takes an operational view: specify the alphabet, marginal frequencies,
+local structure when available, nominal LRD mechanism, random seed, and validation
+evidence.  We give the mathematical construction of each method,
+report one-hot ACF and spectral diagnostics, test marginal control, and benchmark
+generation cost.  The result is not a universal symbolic-LRD generator, but a
+reproducible workbench for estimator testing, controlled machine-learning stress
+tests, privacy-preserving simulation, and studies of symbolic data such as text,
+DNA, cyber-event logs, and network measurements.
+\end{abstract}
+
+\begin{IEEEkeywords}
+Long-range dependence, symbolic sequences, synthetic data, self-similarity,
+Julia, reproducible research.
+\end{IEEEkeywords}
+
+
+\section{Introduction}
+
+Reproducible research needs data that can be shared, regenerated, and varied
+under controlled conditions.  In many domains the real data are proprietary,
+privacy-sensitive, expensive to label, incomplete, or simply unavailable at the
+scale needed for controlled experiments.  Synthetic data can provide ground
+truth, sensitivity checks, and repeatable comparisons
+\cite{ringberg2008_need}, but only when the generator is explicit about what it
+controls and what assumptions it inserts.  Network topology and traffic-matrix
+synthesis illustrate the same tension: a useful generator must be controllable
+enough for experiments, realistic enough not to mislead, and reproducible enough
+for other researchers to interrogate \cite{bowden2014_cold,tune2015_spatiotemporal}.
+
+Long-range dependence (LRD), or long memory, makes this need sharper.  LRD
+means that observations far apart in time remain statistically coupled.  In the
+covariance setting, a stationary process is often described as LRD when
+\begin{equation}
+  \gamma(k) \sim c_\gamma k^{-\beta}, \qquad 0 < \beta < 1,
+\end{equation}
+so the covariance tail is not summable.  Equivalently, many familiar models have
+a low-frequency spectral pole, with spectral density proportional to
+$f^{-(1-\beta)}$ \cite{samorodnitsky2006_long,pipiras2017_long}.  Averages,
+counts, spectra, and estimators can therefore converge much more slowly than
+they would for short-memory data.  Validation often needs long sequences and
+multiple replicates, which is exactly the regime where real traces are hardest
+to obtain and share.
+
+The usual LRD story is numerical: river levels, traffic volumes, queue lengths,
+or other scalar time series.  The focus here is different.  Many data streams
+with plausible long memory are symbolic rather than naturally numerical: text,
+DNA, categorical event logs, cyber-security disclosures, packet-loss states,
+social-media events, and finite-state workflow traces.  Generating such
+sequences supports several tasks:
+\begin{itemize}
+\item controlled finite-alphabet examples for LRD estimator development and
+finite-sample sensitivity studies;
+\item test sets for modeling estimators, including entropy and entropy-rate
+estimators, mutual-information diagnostics, and string-matching algorithms;
+\item stress tests for sequence models on non-language data with language-like
+long context; and
+\item privacy-preserving synthetic event streams when real traces cannot be
+shared.
+\end{itemize}
+Modeling the generation mechanisms can also sharpen scientific questions: which
+features of a sequence are explained by marginals, by local transition rules, by
+renewal structure, by latent numerical dependence, or by genuine long context?
+
+Symbolic LRD is not obtained by simply attaching a Hurst parameter to an
+alphabet.  A common shortcut is to map symbols to numbers and then use numerical
+LRD tools.  That can be useful, but it introduces a metric that the alphabet may
+not possess.  Mapping \(\{\mathtt{A},\mathtt{C},\mathtt{G},\mathtt{T}\}\) to
+\(\{1,2,3,4\}\), for instance, makes the numerical distance from
+\(\mathtt{A}\) to \(\mathtt{T}\) three times the distance from \(\mathtt{A}\) to
+\(\mathtt{C}\).  That geometry is an artifact of the encoding, not of the
+biology.  Conversely, reducing a symbolic sequence to a few count series can
+hide dependence that lives in order, recurrence, or regime changes.
+
+The task is therefore operational.  A useful symbolic-LRD generator must answer
+more than ``what is the nominal \(H\)?''  It must specify the alphabet, the
+marginal distribution, any short-range structure that should be controlled, the
+mechanism that creates long memory, the finite memory or truncation used in
+practice, the random seed and provenance, and the diagnostic used to decide
+whether the generated sequence behaves as intended.  A method may match a
+marginal distribution exactly while producing weak symbolic ACF diagnostics;
+another may have a convincing latent numerical LRD process that is attenuated by
+quantization; another may generate heavy-tailed recurrence times without a clean
+one-hot spectral pole.  These are not minor implementation details.  They are
+part of the scientific meaning of the synthetic data.
+
+We present \sfive{}, a Julia package that makes these choices explicit.  The
+package brings together property-based methods, which generate numerical LRD
+processes and transform them into symbols, and model-based methods, which build
+symbolic dependence directly through finite-memory, regime, renewal,
+self-exciting, or copy/mutation mechanisms.  The central goal is reproducible
+experimentation: explicit constructors, explicit random-number generators, saved
+provenance, fast contract tests, opt-in validation campaigns, and benchmark
+artifacts.  The package is not a universal symbolic-LRD generator.  It is a
+workbench in which mechanisms can be constructed, compared, diagnosed, and
+rejected when they do not support the claim being made.
+
+The contributions of this work are:
+\begin{itemize}
+\item a reproducible generator framework for finite-alphabet symbolic LRD
+sequences;
+\item a taxonomy separating property-based latent-process transformations from
+model-based symbolic mechanisms;
+\item new and adapted symbolic synthesis methods, including finite-memory uses
+of LAMP-style processes, a scalable dyadic-history LAMP approximation, and
+self-exciting symbolic-mass variants motivated by the failure of a naive
+normalized Hawkes translation;
+\item explicit control contracts for alphabets, marginal distributions, local
+Markov structure, nominal LRD parameters, and finite memory limits;
+\item a complexity analysis linking generation cost to sequence length, alphabet
+size, history depth, and calibration iterations;
+\item validation scripts that diagnose both symbolic one-hot processes and, for
+property-based generators, the original numerical latent process.
+\end{itemize}
+
+Not every proposed model performs well, and this is part of the paper's
+argument.  Negative and partially successful constructions are retained because
+they show where intuition from numerical LRD breaks down for symbolic data.  The
+paper therefore treats validation evidence as part of the method, not as an
+afterthought.
+
+\section{Related Work}
+
+The LRD literature is mature, but not monolithic.  Covariance definitions focus
+on the tail of \(\gamma(k)\); spectral definitions focus on the low-frequency
+pole; aggregation definitions connect to statistical self-similarity; and
+point-process definitions often use count variance or recurrence-time tails
+\cite{beran1994_statistics,samorodnitsky2006_long,pipiras2017_long}.  The
+distinctions are not academic bookkeeping.  A finite-state chain can have strong
+local persistence without asymptotic LRD, while a renewal mechanism can have
+heavy-tailed counts without giving a simple symbol-level covariance target.
+This is why the package is organized by mechanism rather than by a single
+advertised exponent.
+
+Numerical LRD synthesis provides the technical starting point.  Spectral fGn
+approximations \cite{paxson1997_fast}, exact and approximate Gaussian simulation
+\cite{wood1994_simulation,dietrich1997_fast,dieker2004_simulation,coeurjolly2000_simulation},
+wavelet and multiscale methods \cite{roughan2000_real}, intermittent maps
+\cite{millan2021_on}, mixtures of short-memory components
+\cite{sorbye2017_an}, and heavy-tailed on/off or fractal point-process models
+\cite{garrett1994_analysis,lowen1995_estimation,ryu1998_point} all offer ways
+to make long memory.  They also show the usual engineering tradeoff.  Exact
+Gaussian methods give strong second-order guarantees but can be expensive or
+fragile for some covariance forms.  Spectral methods are fast and transparent
+but approximate.  Renewal and on/off models are interpretable, but finite runs
+can be dominated by missing scales or realization-to-realization variability
+\cite{roughan1999_the}.  A symbolic package should expose these tradeoffs rather
+than hide them behind a constructor named after \(H\).
+
+Symbolic LRD appears most clearly in DNA and text.  Voss's DNA analysis
+\cite{voss1992_evolution} is especially important for this paper because it
+uses base-specific indicator processes instead of imposing an arbitrary scalar
+encoding.  Related DNA work studies nucleotide correlations, spectra, and
+copy/mutation mechanisms
+\cite{peng1992_long,li1992_long,li1994_understanding,buldyrev1998_analysis}.
+Text studies report long correlations, hierarchy, bursty word use, and rare-word
+clustering
+\cite{schenkel1993_long,ebeling1994_entropy,montemurro2002_long,alvarez2006_hierarchical,altmann2009_beyond,altmann2012_on,tanaka2016_long},
+with more recent work connecting long context to neural sequence models
+\cite{belletti2018_factorized,belletti2019_quantifying,tay2021_long}.  This
+literature is a useful warning: DNA walks, word counts, rare-word arrival
+processes, semantic embeddings, and one-hot indicators can all see different
+aspects of the same sequence.
+
+Several symbolic models are close to the constructions used here.  Linear
+additive Markov processes \cite{kumar2017_linear} and additive Markov-chain
+memory-function models
+\cite{melnyk2006_memory,mayzelis2006_additive,melnik2014_entropy} motivate
+finite-alphabet mechanisms in which weighted history affects the next-symbol
+distribution.  Hawkes-process models for word occurrence \cite{ogura2022_modeling}
+provide a bursty self-exciting route, though the categorical one-symbol-per-time
+setting changes the normalization problem.  Duplication and
+expansion-modification models for DNA-like sequences
+\cite{li1994_understanding,koroteev2015_duplication,salgado2012_exact} provide
+a growth mechanism.  \sfive{} implements these ideas as transparent synthesis
+methods rather than fitted models: parameters are construction controls, not
+claims of inference from a real corpus.  Some implementations are therefore new
+operational variants of older ideas, especially the dyadic-history LAMP
+approximation and the MB4b/MB4c self-exciting mass processes.
+
+Finally, symbolic long memory also touches information-theoretic work on texts
+and Hilberg-like laws \cite{debowski2015_hilberg}.  That connection is not the
+main focus of this paper, but it reinforces the same point: for symbolic data,
+the object of interest is often not one scalar time series but a collection of
+recurrences, counts, transitions, and transformations.  A useful synthesis tool
+must make those choices visible.
+
+\section{Operational Design}
+
+The introduction frames symbolic synthesis as an operational specification
+problem.  This section turns that frame into the package design: what must a user
+define before a synthetic symbolic sequence is useful for an experiment?  Length
+and alphabet are not enough.  The user must decide the
+observable symbol space, the intended long-memory mechanism, the marginal
+frequencies, any short-range structure that should survive generation, and the
+random source needed for reproducibility.  We write a generator schematically as
+\begin{equation}
+  g =
+  (\mathcal{A}, n, \theta_{\mathrm{LRD}}, \vect{p}, \mathcal{L}, d,
+   \code{rng}, \text{method}),
+\end{equation}
+where \(\mathcal{A}\) is the ordered alphabet, \(n\) is the sequence length,
+\(\theta_{\mathrm{LRD}}\) is a method-specific long-memory parameter,
+\(\vect{p}\) is an optional marginal distribution, \(\mathcal{L}\) is optional
+local structure such as Markov transition matrices, \(d\) is a configured or
+effective memory cutoff when applicable, and \code{rng} records the reproducible
+random source.  Not every method supports every control.  The API therefore
+records supported controls rather than presenting all methods as interchangeable.
+Throughout the paper, bold symbols in math mode denote vectors; scalar
+components of those vectors are written with subscripts.
+
+\subsection{LRD Parameters and Self-Similarity}
+
+For a second-order stationary numerical process, the common covariance
+parameterization is
+\begin{equation}
+  \gamma(h) \sim c_\gamma h^{-\beta}, \qquad 0<\beta<1,
+\end{equation}
+where \(\gamma(h)=\operatorname{Cov}(X_t,X_{t+h})\).\footnote{We use
+\(\sim\) in its standard asymptotic-equivalence sense: for positive functions
+\(f\) and \(g\), \(f(k)\sim g(k)\) as \(k\to\infty\) means
+\(\lim_{k\to\infty} f(k)/g(k)=1\). Thus a relation such as
+\(\gamma(k)\sim c_\gamma k^{-\beta}\) is a large-lag tail statement including
+its multiplicative constant, not a claim that finite validation plots exactly
+match a power law at every displayed lag.}  The corresponding
+low-frequency spectral form is
+\begin{equation}
+  f(\lambda) \sim c_f |\lambda|^{-\alpha_s},
+  \qquad \alpha_s = 1-\beta,
+\end{equation}
+and the usual Hurst-parameter relationship is
+\begin{equation}
+  H = 1-\frac{\beta}{2}
+    = \frac{1+\alpha_s}{2},
+  \qquad 1/2 < H < 1.
+\end{equation}
+Equivalently, \(\beta=2-2H\) and \(\alpha_s=2H-1\).  These equations are a
+translation guide among common numerical conventions.  They are not a guarantee
+that a finite symbolic generator with a nominal \(H\) will display the same
+slope in every diagnostic.
+
+The notation needs care because the literature reuses letters.  In this paper
+\(\alpha_s\) denotes a spectral exponent, while some generator descriptions use
+\(\alpha\) for a heavy-tail exponent, for example the Pareto sojourn exponent in
+MB2.  For ideal heavy-tailed on/off constructions with \(1<\alpha<2\), the
+aggregate count-process heuristic is \(H=(3-\alpha)/2\), which is not the same
+relationship as \(\alpha_s=2H-1\).  The package documentation therefore explains
+parameters method by method rather than treating \(H\), \(\alpha\), and \(\beta\)
+as interchangeable labels.
+
+LRD is closely connected to statistical self-similarity.  If a process is
+aggregated into blocks of size \(m\), self-similar scaling means that suitably
+normalized block averages retain the same large-scale distributional form.  For
+symbolic sequences the observable object may be a symbol-indicator process,
+symbol counts in blocks, recurrence times, or a latent numerical driver.  For this reason \sfive{} reports mechanism, transformation, and diagnostic
+together: a symbol sequence can be self-similar in one operational view and
+almost invisible in another.
+
+\subsection{Marginal and Local Controls}
+
+The marginal distribution \(p_j=\Pr(X_t=a_j)\) controls how often each symbol
+appears.  It matters before we even discuss LRD.  First, it determines the
+variance of one-hot diagnostics: rare symbols give noisy autocorrelations.
+Second, it is often a domain constraint.  DNA is the clean example.  Chargaff's
+rules concern the relative frequencies of A, C, G, and T, and real genomes have
+species-specific base compositions as well as differences between species
+\cite{chargaff1950_chemical}.  A symbolic DNA generator that cannot control at
+least the marginal distribution is missing a basic biological feature.  Text has
+an equally familiar version of the same issue: word frequencies often follow a
+Zipf-like distribution, so a synthetic text-like sequence with uniform word
+frequencies would miss a first-order property of the domain
+\cite{zipf1949_human}.  Similar concerns appear as event-frequency imbalance in
+logs.  Third, uncontrolled marginals can make a synthetic benchmark too easy: a
+model may learn the symbol imbalance rather than the long memory.
+
+Short-range structure is a different knob.  A first-order Markov specification
+uses a transition matrix
+\begin{equation}
+  P_{ij}=\Pr(X_t=a_j\mid X_{t-1}=a_i)
+\end{equation}
+to prescribe local repetition, alternation, or symbol-to-symbol preference.  In
+\sfive{} this appears directly in methods such as PB3 and MB2, and indirectly
+through transition or excitation matrices in additive and self-exciting models.
+Controlling \(P\) is not the same as controlling LRD: a finite-state Markov
+chain with a fixed transition matrix is short-memory under ordinary conditions.
+The long-memory mechanism must enter through a persistent latent driver, a
+heavy-tailed regime duration, a power-law history kernel, or another scale-free
+construction.
+
+The design goal follows directly from the paper's narrative: simultaneous
+control with explicit limits.  A useful symbolic LRD generator should let the user say: use this alphabet; make these symbols
+common or rare; preserve this local Markov behavior when the method supports it; and inject
+long memory through this documented mechanism.  These controls can
+conflict.  Strong marginal calibration can attenuate latent dependence; Markov
+regimes with identical stationary distributions can hide LRD from one-hot
+diagnostics; finite memory \(d\) can truncate a nominal power law.  The package
+therefore reports both capability and caveat in constructors, documentation,
+validation plots, and provenance metadata.
+
+\subsection{Interface and Evidence}
+
+The public contract is intentionally small:
+\begin{equation}
+  \code{generate(g, n; rng)} \rightarrow \vect{X}_{1:n}.
+\end{equation}
+Generators preserve alphabet element types and reject invalid probabilities,
+transition matrices, and parameter ranges at construction time.  Convenience
+functions construct standard cases by method identifier, while method-specific
+constructors remain available when the scientific details matter.  The short API
+supports routine experiments; explicit constructors keep the method assumptions
+visible.
+
+Property-based generators also implement
+\begin{equation}
+  \code{generate\_with\_latent}(g,n;\code{rng}),
+\end{equation}
+which returns both the emitted symbols and the latent numerical matrix.  The
+latent output is needed for validation.  If the symbolic diagnostics look weak,
+it helps distinguish a weak numerical source from dependence lost in the
+transformation or from finite-sample variability.
+
+The reproducibility story also requires separating correctness evidence from
+scientific evidence.  Unit tests
+cover construction, reproducibility, type preservation, and finite-sample
+contracts.  Validation scripts produce longer Monte Carlo diagnostics: one-hot
+autocorrelation, one-hot spectra, marginal control, local transition control,
+and comparison conventions compatible with LongMemory.jl.  Benchmarks live in a
+separate project environment and run only on explicit request.  This separation keeps ordinary package tests short while retaining the
+longer validation evidence used in this paper.
+
+\section{Methods}
+
+The methods are grouped by how they create dependence.  Property-based methods
+start with a numerical LRD process and then ask how much dependence survives the
+symbolizer.  Model-based methods generate symbols directly, so their claims are
+tied to the symbolic mechanism itself.  Table~\ref{tab:methods} summarizes the
+implemented methods, their main controls, computational cost, and the caveat a
+user should keep in mind before trusting a plot.
+
+\begin{table*}[!t]
+\caption{Implemented symbolic LRD synthesis methods in \sfive{}. Here $n$ is the
+sequence length, $K$ is the alphabet size, $d$ is a configured history depth,
+and $I$ is the number of PB2 calibration iterations. Costs describe generation
+after construction for the standard implementations.}
+\label{tab:methods}
+\centering
+\footnotesize
+\begin{tabular}{lp{0.18\textwidth}p{0.18\textwidth}lp{0.26\textwidth}}
+\hline
+ID & Mechanism & Main controls & Typical cost & Main caveat \\
+\hline
+PB1 & Spectral fGn + rank quantization & $H$, marginal & $O(n\log n)$ & local structure induced by quantization \\
+PB2 & Latent Gaussian categorical argmax & $H$, marginal, $I$ & $O(nKI)$ & argmax transform is nonlinear and calibrated empirically \\
+PB3 & LRD regime driver + Markov chain & $H$, regime weights, $P^{(r)}$ & $O(n\log n+nK)$ & one-hot diagnostics may miss hidden regimes \\
+PB4 & Intermittent map + rank quantization & map exponent, marginal & $O(n\log n)$ & finite laminar scales drive behavior \\
+\hline
+MB1a & Exact finite-history additive row mixture & $\beta$, $d$, $P$, marginal & $O(nd)$ & finite memory truncates asymptotic LRD \\
+MB1b & Dyadic-bucket additive row mixture & $\beta$, $d$, $P$, marginal & $O(nK\log d)$ & dyadic approximation changes exact history weights \\
+MB1c & Centered additive memory function & $\beta$, $d$, $\rho$, marginal & $O(nd)$ & clipping/renormalization affects strong memory \\
+MB2 & Heavy-tailed regime sojourns & $\alpha$, $P^{(r)}$, $Q$ & $O(nK)$ & count-process theory is only a guide for symbols \\
+MB3 & Competing fractal renewal streams & tail exponent, rates & $O(nK)$ & missing-scale effects can be severe \\
+MB4a & Normalized Hawkes-style excitation & $\beta$, $d$, $\vect{\mu}$, $A$ & $O(nKd)$ & normalized kernel can look short-memory \\
+MB4b & Self-exciting symbol mass & $\beta$, $d$, $\vect{p}$, $b$, $\eta$, $s$, $A$ & $O(nKd)$ & strong excitation can distort marginals \\
+MB4c & Log-contrast self-exciting mass & $\beta$, $d$, $\vect{p}$, $b$, $\eta$, $s$, $a$, $A$ & $O(nKd)$ or $O(n^2K)$ & contrast can cause symbol lock-in \\
+MB5 & Power-law lag copy/mutation growth & $\alpha$, $d_{\max}$, mutation & $O(n\log d)$ & growth mechanism can overproduce local patches \\
+\hline
+\end{tabular}
+\end{table*}
+
+\subsection{Property-Based Methods}
+
+Property-based methods are attractive because numerical LRD synthesis is well
+understood.  They are also dangerous in a useful way: the transformation can
+change the dependence we thought we had.  The package therefore treats the
+latent process and the symbolizer as separate objects.
+
+Let $\mathcal{A}=\{a_1,\ldots,a_K\}$ be the ordered alphabet and let
+\(\vect{p}=(p_1,\ldots,p_K)\) be a target marginal distribution where applicable.
+Property-based generators first create a real-valued latent matrix
+$Z\in\mathbb{R}^{W\times n}$ and then apply a symbolizer
+$T:\mathbb{R}^{W\times n}\rightarrow\mathcal{A}^n$. The implementation exposes
+this split through
+\[
+  (\vect{X}_{1:n},Z) = \code{generate\_with\_latent}(g,n;\code{rng}),
+\]
+so validation can ask whether the LRD signal is present in $Z$, lost in $T$, or
+only weakly visible after finite-sample averaging.
+
+\paragraph{PB1: spectral fGn with quantization.}
+PB1 generates a single latent series $Z_t$ using Paxson's approximate spectral
+fractional Gaussian noise method \cite{paxson1997_fast}. On the Fourier grid,
+the target spectral shape is
+\begin{equation}
+  S(f_j) \propto |f_j|^{1-2H}, \qquad H\in(1/2,1),
+\end{equation}
+with random phases and Hermitian symmetry giving a real inverse FFT. The
+implementation normalizes the latent series to zero sample mean and unit sample
+variance. The symbolizer is deterministic rank binning: choose integer bin
+counts $c_i$ with $\sum_i c_i=n$ and $c_i\approx n p_i$, sort the latent values,
+and assign the smallest $c_1$ values to $a_1$, the next $c_2$ values to $a_2$,
+and so on. Thus PB1 has strong finite-sample marginal control, but short-range
+symbol structure is induced rather than directly prescribed.
+
+\paragraph{PB2: latent Gaussian categorical model.}
+PB2 uses $K$ independent fGn streams $Z_{i,t}$ with common Hurst parameter $H$.
+The emitted symbol is
+\begin{equation}
+  X_t = a_{\arg\max_i \{Z_{i,t}+\theta_i\}},
+\end{equation}
+where offsets \(\theta_i\) are entries of the offset vector \(\vect{\theta}\),
+which is calibrated on the realized latent sample to
+approximate the target marginal distribution. \sfive{} uses the iterative update
+\begin{equation}
+  \theta_i \leftarrow \theta_i
+      + \eta\left[\log(p_i+\epsilon)-\log(\hat p_i+\epsilon)\right],
+\end{equation}
+followed by centering the offsets, where \(\hat p_i\) is the current empirical
+choice probability and \(\hat{\vect{p}}\) is the empirical choice-probability
+vector. This is a practical finite-sample adaptation of latent
+Gaussian categorical modeling \cite{gal2015_latent}; it does not solve the
+exact multivariate Gaussian choice probabilities.
+
+\paragraph{PB3: latent driver with Markov regimes.}
+PB3 creates a one-dimensional long-memory driver $Z_t$ using either the spectral
+source above or a Haar-like cascade. The driver is rank-binned into regimes
+\(R_t\in\{1,\ldots,M\}\) with target regime-weight vector \(\vect{\pi}\).
+Conditional on the
+current regime, symbols follow a first-order Markov chain:
+\begin{equation}
+  \Pr(X_t=a_j\mid X_{t-1}=a_i,R_t=r) = P^{(r)}_{ij}.
+\end{equation}
+The local bigram mechanism is therefore explicit through the matrices
+$P^{(r)}$, while large-scale persistence is inherited from the regime driver.
+When regimes have nearly identical stationary distributions, one-hot symbol
+diagnostics may hide the latent LRD; validation therefore reports the latent
+driver as well as the emitted symbols.
+
+\paragraph{PB4: intermittent-map quantization.}
+PB4 uses a Pomeau-Manneville-style intermittent map
+\begin{equation}
+  Z_{t+1} = (Z_t + Z_t^z) \bmod 1, \qquad z>1,
+\end{equation}
+after a burn-in period. The long laminar episodes near zero create broad
+finite-scale dependence in the latent driver. \sfive{} then applies the same
+rank-binning symbolizer as PB1. This method is motivated by intermittent-map
+approaches to genomic-sequence statistics \cite{provata2012_coupled}, but the
+package treats it as a latent finite-sample mechanism rather than an exact
+closed-form symbolic LRD construction.
+
+The common risk is that nonlinear transformations can change apparent
+long-memory behavior. The package therefore validates both the latent numerical
+process and the final one-hot symbolic process.
+
+\subsection{Model-Based Methods}
+
+Model-based methods generate symbols directly.  They avoid the arbitrary
+numeric-encoding problem, but they must earn their LRD behavior through the
+symbolic mechanism itself.  This makes their caveats more visible: finite memory,
+renewal overdispersion, normalization, and copy/mutation patches all show up in
+validation.
+
+\paragraph{MB1a: finite-history LAMP.}
+MB1a implements a finite-history linear-additive Markov process
+\cite{kumar2017_linear}. Given transition matrix $P$, target marginal \(\vect{p}\),
+history depth $d$, and normalized weights $w_\ell$, the next-symbol
+distribution vector \(\vect{q}_t\) has entries
+\begin{equation}
+  q_t(j) = (1-\epsilon)\sum_{\ell=1}^{m_t} w_{\ell,t}
+             P_{I(X_{t-\ell}),j}
+          + \epsilon p_j + b_{t,j},
+\end{equation}
+where $m_t=\min(d,t-1)$, $I(X)$ maps symbols to indices, and $b_{t,j}$ accounts
+for missing pre-history mass by assigning it according to \(\vect{p}\). \sfive{} uses
+power-law weights over observed lags,
+\begin{equation}
+  w_\ell \propto \ell^{-(1+\beta)}
+\end{equation}
+for the LAMP-style row mixture. The small innovation parameter $\epsilon$
+prevents finite-history absorption and preserves a direct marginal-control
+path. MB1a is exact for the configured finite memory, but it is not a proof that
+the finite sequence has asymptotic LRD beyond the memory window.
+
+\paragraph{MB1b: dyadic-bucket LAMP.}
+MB1b approximates the MB1a history sum with dyadic lag buckets
+\begin{equation}
+  B_b = \{2^b,\ldots,2^{b+1}-1\}.
+\end{equation}
+For each bucket, the generator maintains a count vector \(\vect{h}_b\) of
+historical symbols
+and a total bucket weight $W_b=\sum_{\ell\in B_b} w_\ell$. The row-mixture term
+is approximated by
+\begin{equation}
+  \sum_b W_b \sum_i \hat h_{b,i} P_{ij},
+\end{equation}
+where $\hat h_{b,i}$ is the empirical symbol mix in bucket $b$. This preserves
+the power-law age profile at dyadic resolution while avoiding an explicit scan
+over all $d$ lags. It is a scalable approximation, not an identical
+finite-history LAMP.
+
+\paragraph{MB1c: centered additive Markov chain.}
+MB1c follows additive Markov-chain memory-function work
+\cite{melnyk2006_memory,mayzelis2006_additive,melnik2014_entropy}. It writes
+the next-symbol probability vector as a perturbation around the target marginal:
+\begin{equation}
+  q_t(j) = p_j + \rho\sum_{\ell=1}^{m_t} v_{\ell,t}
+          \left(\mathbf{1}\{X_{t-\ell}=a_j\}-p_j\right),
+\end{equation}
+with $v_\ell\propto \ell^{-\beta}$ and strength $\rho\in[0,1]$. The centered
+form makes the intended recurrence effect clearer than a row mixture: observing
+$a_j$ in the past increases the future probability of $a_j$ relative to its
+baseline. Probabilities are clipped and renormalized when finite histories and
+large $\rho$ would otherwise leave the simplex.
+
+\paragraph{MB2: heavy-tailed on/off Markov chain.}
+MB2 has a regime process $R_t$ with heavy-tailed sojourns. A sojourn length $L$
+has Pareto-like tail
+\begin{equation}
+  \Pr(L>x) = (L_{\min}/x)^\alpha,\qquad 1<\alpha<2,
+\end{equation}
+above the scale $L_{\min}$. At regime boundaries, a transition matrix $Q$
+selects the next regime. Within a regime,
+\begin{equation}
+  \Pr(X_t=a_j\mid X_{t-1}=a_i,R_t=r)=P^{(r)}_{ij}.
+\end{equation}
+Heavy-tailed regime durations create persistent occupancy, while the
+within-regime matrices control local symbol dynamics. The nominal count-process
+relationship is $H=(3-\alpha)/2$ for ideal on/off constructions
+\cite{garrett1994_analysis,ryu1998_point}.
+
+\paragraph{MB3: fractal symbol sequence.}
+MB3 assigns each symbol $a_i$ an independent event stream with heavy-tailed
+inter-arrival times. If \(T_i\) is the entry of the pending-time vector
+\(\vect{T}\) for symbol \(i\), the
+emitted symbol at sequence step $t$ is the one with the smallest pending event
+time:
+\begin{equation}
+  X_t = a_{\arg\min_i T_i}.
+\end{equation}
+After emitting $a_i$, its pending time is advanced by another heavy-tailed
+inter-arrival sample. This adapts fractal renewal and shot-noise ideas to a
+finite alphabet \cite{lowen1995_estimation,ryu1998_point}. The known
+missing-scales problem for naive fractal renewals \cite{roughan1999_the} is a
+reason to validate the realized scale range rather than rely only on the tail
+parameter. MB3's rate vector is therefore an asymptotic intensity control: in a
+finite sequence, heavy-tailed renewal-count fluctuations can dominate the
+nominal rate ratios.
+
+\paragraph{MB4a, MB4b, and MB4c: discrete-time self-exciting symbols.}
+The first MB4 construction, now denoted MB4a and implemented as
+\code{HawkesSymbol}, is a finite-history symbolic analogue of Hawkes
+word-occurrence models \cite{ogura2022_modeling}. It follows the Hawkes idea of
+an immigration or baseline component plus self-excitation from past events. At
+time $t$ each symbol has an intensity
+\begin{equation}
+  \lambda_{t,j} =
+  \mu_j + \sum_{\ell=1}^{m_t} \bar{g}(\ell)
+          A_{I(X_{t-\ell}),j},
+  \qquad
+  \bar{g}(\ell)=\frac{(\ell+c)^{-\beta}}
+                     {\sum_{r=1}^{d}(r+c)^{-\beta}},
+\end{equation}
+where \(m_t=\min(d,t-1)\), \(\vect{\lambda}_t\) is the intensity vector,
+\(\vect{\mu}\) is a positive baseline vector, and $A$ is a nonnegative excitation
+matrix. The emitted symbol is sampled from normalized intensities:
+\begin{equation}
+  \Pr(X_t=a_j\mid X_{1:t-1}) =
+  \lambda_{t,j}/\sum_r\lambda_{t,r}.
+\end{equation}
+Identity-like $A$ creates bursty repetition; off-diagonal entries create
+cross-symbol triggering. This is close to a discrete-time marked or multivariate
+Hawkes intuition, but it differs from a continuous-time Hawkes process because
+exactly one categorical symbol is emitted at every time step.
+
+Validation exposed a weakness in MB4a. Since \(\bar{g}\) has unit mass, the
+history component has bounded total scale. In the uniform identity-excitation
+case a first-order linearization has the form
+\begin{equation}
+  Z_t \approx a \sum_{\ell=1}^{d}\bar{g}(\ell)Z_{t-\ell}+\varepsilon_t,
+  \qquad 0<a<1,
+\end{equation}
+where the baseline and categorical normalization keep $a$ below one. The
+low-frequency spectrum can then have a plateau rather than a visible power-law
+pole, so centered one-hot diagnostics can look almost white even when short-run
+burstiness is present. Increasing the identity-excitation amplitude does not by
+itself remove this normalization effect.
+
+MB4b, implemented as \code{SelfExcitingMass}, keeps the discrete-time symbolic
+setting but changes what is normalized. Let \(\vect{p}\) be the target/default
+marginal, let $b\ge 0$ be a default mass, let \(\eta\ge 0\) be an excitation
+strength, and let $s\ge 0$ be a smoothing floor. MB4b forms unnormalized masses
+\begin{equation}
+  M_{t,j} = b p_j + \eta\left(s p_j +
+  \sum_{\ell=1}^{m_t} (\ell+c)^{-\beta} A_{I(X_{t-\ell}),j}\right),
+\end{equation}
+and only then samples
+\begin{equation}
+  \Pr(X_t=a_j\mid X_{1:t-1}) = M_{t,j}/\sum_r M_{t,r}.
+\end{equation}
+The key difference is that the power-law kernel is not normalized in the memory
+mass. For \(0<\beta<1\), the represented memory mass grows like
+\(d^{1-\beta}\) over the finite range, allowing self-excitation to dominate the
+small default component once enough history exists. The default and smoothing
+terms are retained to make the startup distribution normalizable and to prevent
+symbols from becoming permanently unreachable. MB4b is therefore best viewed as
+our discrete-time categorical adaptation of Hawkes-style self-excitation, rather
+than a standard Hawkes model already present in the literature. The closest
+literature precedent is MB4a's Hawkes/word-recurrence motivation; MB4b is the
+package modification introduced because the traditional normalized categorical
+translation gave weak LRD diagnostics.
+
+The remaining weakness of MB4b is that the final categorical normalization still
+uses the total mass \(\sum_r M_{t,r}\). When the identity-excitation model has
+nearly uniform symbol usage, much of the accumulated long-memory mass is common
+mode across symbols. MB4c, implemented as \code{LogitSelfExcitingMass}, keeps the
+same unnormalized mass \(M_{t,j}\) but converts it to a centered log contrast
+before sampling. Let \(a\ge 0\) be a contrast strength and \(\epsilon>0\) a small
+logarithmic floor. Define
+\begin{equation}
+  \theta_{t,j} = a\left[\log(M_{t,j}+\epsilon)
+  - \sum_r p_r\log(M_{t,r}+\epsilon)\right].
+\end{equation}
+MB4c then samples according to
+\begin{equation}
+  \Pr(X_t=a_j\mid X_{1:t-1}) =
+  \frac{p_j\exp(\theta_{t,j})}{\sum_r p_r\exp(\theta_{t,r})}.
+\end{equation}
+The subtraction removes common-mode growth in the history mass before the final
+probability normalization. Conceptually, the power-law kernel need not have a
+finite memory limit; the implementation parameter \(d\) is a computational
+truncation, and \code{d = nothing} in MB4c uses all previous generated symbols.
+The offset \(c\) is likewise not a second LRD parameter: it regularizes short
+lags through \((\ell+c)^{-\beta}\), while \(\beta\) controls the asymptotic
+power-law decay. Preliminary validation shows the expected tradeoff. Increasing
+\(a\) can steepen the low-frequency spectrum, but too large a contrast creates
+symbol lock-in and poor finite-sample marginals. We therefore treat MB4c as a
+new experimental variant and use it to expose the remaining design problem rather
+than as a final closed-form solution.
+
+\paragraph{MB5: duplication-mutation growth.}
+MB5 starts from an iid seed sequence and grows by copying a previous symbol at
+a random lag. The lag $D_t$ is drawn from a truncated power law,
+\begin{equation}
+  \Pr(D_t=d) \propto d^{-\alpha},
+  \qquad 1\le d\le d_{\max}.
+\end{equation}
+With probability $1-\mu$, the next symbol is copied,
+$X_t=X_{t-D_t}$; with probability $\mu$, it is mutated by drawing from the
+target marginal or an alternative symbol distribution. This is motivated by
+duplication-mutation and expansion-modification ideas in DNA-like symbolic
+sequences \cite{li1994_understanding,koroteev2015_duplication,salgado2012_exact}.
+\sfive{} uses the power-law lag-copy version because validation showed that a
+block-length-only version produced local patches without the intended symbolic
+autocorrelation decay.
+
+\section{Validation Results}
+\label{sec:validation}
+
+\subsection{ACF and Spectra for Symbolic Sequences}
+
+The introduction argues that symbolic LRD claims depend on the diagnostic used.
+The first validation question is therefore how to compute an ACF for objects that
+are not numbers.  A symbolic sequence has no canonical numerical scale.  For example,
+replacing
+\(\{\mathtt{A},\mathtt{C},\mathtt{G},\mathtt{T}\}\) by \(\{1,2,3,4\}\) would make
+the distance between \(\mathtt{A}\) and \(\mathtt{T}\) three times the distance
+between \(\mathtt{A}\) and \(\mathtt{C}\), even though no such distance is part
+of the alphabet. \sfive{} therefore validates symbolic dependence through centered
+indicator processes, following the spirit of Voss's DNA indicator method
+\cite{voss1992_evolution}.
+
+Let \(\vect{X}_{1:n}=(X_1,\ldots,X_n)\in\mathcal{A}^n\), where
+\(\mathcal{A}=\{a_1,\ldots,a_K\}\). For each symbol \(a_j\), define the binary
+indicator and its centered version
+\begin{equation}
+  B_t(a_j)=\mathbf{1}\{X_t=a_j\}, \qquad
+  Y_t(a_j)=B_t(a_j)-\bar B(a_j),
+\end{equation}
+where \(\bar B(a_j)=n^{-1}\sum_{t=1}^n B_t(a_j)\). The sample autocovariance for
+symbol \(a_j\) at lag \(h\) is then
+\begin{equation}
+  \hat\gamma_j(h)=
+  \frac{1}{n-h}\sum_{t=1}^{n-h}Y_t(a_j)Y_{t+h}(a_j),
+  \qquad h=0,\ldots,n-1,
+\end{equation}
+and the corresponding autocorrelation is
+\begin{equation}
+  \hat\rho_j(h)=\hat\gamma_j(h)/\hat\gamma_j(0),
+\end{equation}
+when \(\hat\gamma_j(0)>0\). Symbols with zero empirical variance are omitted.
+The reported symbolic ACF is an average across the remaining symbol indicators,
+usually after retaining positive values for log-log display:
+\begin{equation}
+  \hat\rho_{\mathrm{sym}}(h)=
+  \frac{1}{|\mathcal{J}|}\sum_{j\in\mathcal{J}}\hat\rho_j(h),
+  \qquad
+  \mathcal{J}=\{j:\hat\gamma_j(0)>0\}.
+\end{equation}
+This is not the only possible symbolic diagnostic, but it has a clear
+interpretation: it asks whether occurrences of the same symbol remain
+correlated over long lags.
+
+The spectral diagnostic uses the same centered indicator series. For Fourier
+frequencies \(f_m=m/n\), a simple periodogram for symbol \(a_j\) is
+\begin{equation}
+  \hat S_j(f_m)=
+  \frac{1}{n}\left|
+    \sum_{t=1}^n Y_t(a_j)\exp(-2\pi i f_m t)
+  \right|^2 .
+\end{equation}
+\sfive{} averages these symbol-wise periodograms across \(j\in\mathcal{J}\), then
+plots the result on log-log axes. A symbolic sequence with covariance-like LRD
+in its indicator processes should show slowly decaying positive ACF values and
+elevated low-frequency spectral power, subject to finite-sample noise.
+
+As a toy example, take
+\[
+  \vect{X}_{1:8}=(a,b,a,a,c,b,a,c).
+\]
+For symbol \(a\),
+\[
+  \vect{B}(a)=(1,0,1,1,0,0,1,0), \qquad \bar B(a)=4/8,
+\]
+so
+\[
+  \vect{Y}(a)=(1/2,-1/2,1/2,1/2,-1/2,-1/2,1/2,-1/2).
+\]
+The lag-one autocovariance contribution is the average of
+\[
+  \vect{c}_1=(-1/4,-1/4,1/4,-1/4,1/4,-1/4,-1/4),
+\]
+which is negative for this short sequence; the symbol \(a\) tends not to repeat
+at lag one except for the pair at positions 3 and 4. The same calculation is
+performed for \(b\) and \(c\), and the symbol-wise ACFs are averaged. For a real
+validation run this procedure is applied to much longer sequences and many
+lags; the toy example is only meant to show the transformation from symbols to
+numerical diagnostics.
+
+The plotted dashed reference lines show nominal power-law behavior and
+finite-sample interpretation limits.  They are visual guides, not estimator
+guarantees.  Centered one-hot diagnostics also have limitations: they can miss
+dependence that appears only in higher-order patterns, changing transition
+matrices, or recurrence-time distributions.  This limitation reflects the problem rather than the implementation: symbolic
+LRD cannot be reduced to one statistic, so the diagnostic must be stated beside
+the generated data.
+
+\subsection{Marginal-Control Validation}
+
+Because the paper treats synthetic data as a controlled experimental object,
+LRD diagnostics are only meaningful if the generator also respects the requested
+symbol frequencies well enough for the intended experiment. \sfive{} therefore
+includes a separate marginal-control validation. The paper-facing case uses a
+uniform categorical target with \(K=8\), generates \(n=100000\) symbols for each
+replicate, and drops the first and last 10\% before computing frequencies. The
+trimmed window reduces sensitivity to initialization and terminal edge effects,
+leaving 80000 observations per replicate in the reported run.
+
+The uniform target has two advantages. First, if a generator can produce a
+fine uniform categorical distribution, other marginals can be approximated by
+aggregating fine bins; direct nonuniform targets are still tested elsewhere in
+the validation script, but the uniform case gives the most comparable shared
+diagnostic.
+Second, the uniform case avoids small expected cell counts. Classical
+chi-squared frequency tests become unreliable when bins have low expected
+counts, a common problem for skewed symbolic distributions.
+
+For each replicate, the validation computes
+\begin{equation}
+  \chi^2_{\mathrm{obs}} = \sum_{j=1}^{K}\frac{(N_j - m/K)^2}{m/K},
+\end{equation}
+where \(m\) is the trimmed sample size and \(N_j\) is the count for symbol
+\(a_j\). The reported p-values use the iid multinomial chi-squared reference
+with \(K-1\) degrees of freedom. This reference is conservative as
+an interpretation aid: the generated sequences are dependent, so the p-values
+are frequency diagnostics rather than exact hypothesis-test probabilities. The
+issue is especially important for LRD generators because empirical averages can
+converge more slowly than the iid multinomial model assumes. Thus a strict
+chi-squared test may reject too often even when the generator has the intended
+long-run marginal, although large values remain indicative of a control problem.
+
+The validation table also reports an approximate effective-sample-size (ESS)
+correction. For symbol \(a_j\), define the centered indicator
+\(Y_{j,t}=\mathbb{1}\{X_t=a_j\}-\hat p_j\) on the trimmed sequence. Let
+\(\hat\rho_j(h)\) be its sample autocorrelation at lag \(h\). We use an
+initial-positive truncation. That is, \(h_j^\star\) is the largest lag before
+the first non-positive value in the sequence
+\(\hat\rho_j(1),\hat\rho_j(2),\ldots\), and
+\begin{equation}
+  \hat\tau_j = 1 + 2\sum_{h=1}^{h_j^\star}\hat\rho_j(h),
+\end{equation}
+with \(\hat\tau_j\ge 1\), and define
+\begin{equation}
+  \hat m_{\mathrm{eff}} =
+  \min_{1\le j\le K}\frac{m}{\hat\tau_j}.
+\end{equation}
+The ESS-adjusted statistic is then
+\begin{equation}
+  \chi^2_{\mathrm{ESS}} = \chi^2_{\mathrm{obs}}\frac{\hat m_{\mathrm{eff}}}{m}.
+\end{equation}
+This scalar correction is not a full dependent multinomial theory. It uses the
+smallest symbol-level ESS, so it is conservative, but it helps identify cases
+where an apparently large frequency deviation is partly explained by long
+dependence in the symbol indicators.
+For MB1a and MB1b, the marginal-control validation uses the package's
+repeat-biased identity/dyad transition helper, with repeat probability 0.4.
+This keeps a history-repetition mechanism while making \(\vect{p}\) the
+stationary distribution of the transition matrix. A pure identity matrix is
+still a useful stress case, but it can preserve early finite-sample imbalances
+for a long time.
+The retained table also reports full-sequence marginal error, because some
+methods calibrate or rank-bin the entire generated sample while the trimmed
+interior window is allowed to fluctuate.
+
+A better formal test would calibrate the null distribution under dependence.
+Possible extensions include block or subsampling tests, or a parametric Monte
+Carlo envelope generated from the same configured generator. These extensions
+are left for later work. The simple chi-squared reference and the ESS-adjusted
+diagnostic remain useful because they are transparent,
+comparable across methods, and sensitive to obvious marginal-control failures.
+
+\begin{table*}[!t]
+\caption{Uniform marginal validation for \(K=8\), \(n=100000\), 20 replicates,
+and a trimmed window of 80000 observations per replicate. The iid p-values use
+the multinomial chi-squared reference. The ESS p-values scale the statistic by
+the conservative effective sample size estimated from one-hot symbol
+autocorrelations. Both should be read as diagnostics under dependence. TV
+denotes total variation distance from the target marginal.}
+\label{tab:uniform-marginal}
+\centering
+\footnotesize
+\begin{tabular}{lrrrrr}
+\hline
+Method & Mean \(\chi^2_{\mathrm{obs}}\) & Median iid \(p\) & Median ESS \(p\) & Full TV & Trim TV \\
+\hline
+\code{PB1} \code{SpectralFGN} & 39.65 & 0.040 & 0.997 & 0.0000 & 0.0074 \\
+\code{PB2} \code{LGCM} & 87.69 & \(4.55{\times}10^{-14}\) & 0.966 & 0.0001 & 0.0135 \\
+\code{PB3} \code{WaveletMarkov} & 6.84 & 0.514 & 0.525 & 0.0034 & 0.0036 \\
+\code{PB4} \code{IntermittentMapSymbols} & 25.18 & 0.065 & 1.000 & 0.0000 & 0.0053 \\
+\code{MB1a} \code{LAMP} & 18.92 & 0.021 & 0.445 & 0.0053 & 0.0060 \\
+\code{MB1b} \code{DyadicLAMP} & 15.52 & 0.035 & 0.486 & 0.0048 & 0.0055 \\
+\code{MB1c} \code{CalibratedAdditiveMarkov} & 7.43 & 0.493 & 0.508 & 0.0035 & 0.0040 \\
+\code{MB2} \code{OnOffMarkov} & 6.33 & 0.567 & 0.583 & 0.0032 & 0.0035 \\
+\code{MB3} \code{FSS} & 203.01 & \(5.48{\times}10^{-17}\) & \(5.48{\times}10^{-17}\) & 0.0160 & 0.0175 \\
+\code{MB4a} \code{HawkesSymbol} & 7.43 & 0.493 & 0.508 & 0.0035 & 0.0040 \\
+\code{MB4b} \code{SelfExcitingMass} & 7.43 & 0.493 & 0.508 & 0.0035 & 0.0040 \\
+\code{MB4c} \code{LogitSelfExcitingMass} & 7.43 & 0.493 & 0.508 & 0.0035 & 0.0040 \\
+\code{MB5} \code{DuplicationMutation} & 6.81 & 0.531 & 0.545 & 0.0033 & 0.0035 \\
+\hline
+\end{tabular}
+\end{table*}
+
+The table shows three different phenomena. PB1 and PB4 use rank binning and
+therefore match the full sample exactly in this uniform case, but the interior
+trimmed window can wander because the sequence is dependent. PB2 similarly
+calibrates the whole generated sample very closely, while the trimmed window has
+larger deviations. Methods with explicit iid or stationary uniform mechanisms,
+including PB3, MB1a, MB1b, MB1c, MB2, MB4a, MB4b, MB4c, and MB5 in the tested configurations,
+mostly match the marginal closely in total-variation terms. MB3 is the clear
+exception. Its independent heavy-tailed renewal streams show the largest
+replicate variability in both the full and trimmed samples, and the ESS
+correction does not change the conclusion: the estimated one-hot ESS is the full
+trimmed length in this run. This indicates that the failure is not primarily a
+short-lag serial-correlation correction problem. Rather, it is a renewal-count
+overdispersion problem: over a finite horizon, one symbol stream can realize many
+short gaps while another realizes one or more very long gaps, even when the
+nominal rates are equal. The resulting marginal imbalance can be much larger
+than iid multinomial theory expects. These results are not LRD estimates; they
+are control diagnostics that identify when a generator's long-memory mechanism
+interferes with a simple marginal target.
+
+\subsection{Toward One-Step Markov Validation}
+
+Marginals are only the first local control.  The same validation philosophy
+extends to one-step Markov behavior, but direct matrix testing is more
+data-hungry.  A \(K\times K\) transition matrix has \(K^2\) cells, and the
+effective count in row \(i\) is proportional to the number of visits to
+symbol \(a_i\).  For large or skewed alphabets, many rows can have too little
+data for a useful cell-wise chi-squared comparison.
+
+A practical validation shortcut is to test interpretable low-dimensional
+contrasts of the transition matrix before attempting a full matrix test. Useful
+summaries include the repeat probability
+\(\Pr(X_t=X_{t-1})\), stationary-weighted row total variation, selected rows
+for scientifically important symbols, grouped transitions after aggregating
+symbols into coarser classes, and projections \(u^\top(P-\hat P)v\) for a small
+set of contrast vectors \(u\) and \(v\). These diagnostics do not replace full
+row-by-row validation for small \(K\) or very long runs, but they provide a
+shorter path for detecting whether local persistence, cycling, or group-level
+movement has the intended strength.
+
+The validation plots are mainly comparative. PB1 is the simplest baseline:
+the latent spectral construction is visible and rank quantization often leaves
+a recognizable symbolic power-law range. PB2 generally preserves a useful
+long-memory signal, but the argmax transform and marginal-offset calibration
+make the symbolic diagnostics less transparent than PB1. PB3 separates the
+latent driver from the emitted Markov chain; this is useful because the latent
+diagnostics can remain convincing even when the symbol indicators are partly blind to regime persistence. PB4 illustrates a different
+phenomenology: dependence is created by intermittent laminar episodes rather
+than by a Gaussian spectral pole.
+
+Among model-based methods, MB1b and MB1c are intended as the most direct
+symbolic additive-memory baselines, with MB1a kept as the exact finite-history
+reference. MB2 and MB3 are mechanism-oriented renewal/regime baselines and are
+particularly useful when recurrence or burst durations are the quantity of
+interest. The weaker MB4a and MB5 results are included because MB4a's normalized
+finite-history excitation can have a nearly white symbol spectrum, and MB5's copy/mutation growth can concentrate dependence into
+local duplication structure rather than a clean one-hot power law. MB4b is the
+replacement candidate motivated by this failure mode, but its finite-sample
+behavior still requires validation. These cases show why symbolic LRD generators
+require empirical diagnostics in addition to parameter labels.
+
+
+\begin{figure*}[!t]
+\centering
+\acfsubfig{PB1_SpectralFGN}{PB1}\hfill
+\acfsubfig{PB2_LGCM}{PB2}\hfill
+\acfsubfig{PB3_WaveletMarkov_Haar}{PB3 Haar}\\[0.4ex]
+\acfsubfig{PB3_WaveletMarkov_Spectral}{PB3 spectral}\hfill
+\acfsubfig{PB4_IntermittentMapSymbols}{PB4}
+\caption{Production ACF diagnostics for property-based methods. Each subplot is
+the centered one-hot symbolic ACF with finite-length and target power-law guides;
+latent ACFs and spectral-density panels are generated by the validation scripts
+and synced into the paper figure tree, but are omitted here to save space.}
+\label{fig:validation-acf-property}
+\end{figure*}
+
+\begin{figure*}[!t]
+\centering
+\acfsubfig{MB1a_LAMP}{MB1a}\hfill
+\acfsubfig{MB1b_DyadicLAMP}{MB1b}\hfill
+\acfsubfig{MB1c_CalibratedAdditiveMarkov}{MB1c}\\[0.4ex]
+\acfsubfig{MB2_OnOffMarkov}{MB2}\hfill
+\acfsubfig{MB3_FSS}{MB3}\hfill
+\acfsubfig{MB4a_HawkesSymbol}{MB4a}\\[0.4ex]
+\acfsubfig{MB4b_SelfExcitingMass}{MB4b}\hfill
+\acfsubfig{MB4c_LogitSelfExcitingMass}{MB4c}\hfill
+\acfsubfig{MB5_DuplicationMutation}{MB5}
+\caption{Production ACF diagnostics for model-based methods. The panels use the
+same title-free production plot style as Fig.~\ref{fig:validation-acf-property},
+with method names supplied by subcaptions rather than embedded titles.}
+\label{fig:validation-acf-model}
+\end{figure*}
+
+\section{Benchmark Results and Discussion}
+
+The benchmark section supports the same operational narrative: what does each
+mechanism cost when it is used as a generator rather than as a mathematical
+idea?  The measurements are generated with \pkg{BenchmarkTools.jl} in a
+separate environment.  The extended scaling
+mode uses sequence lengths from $10^2$ to $10^6$ and averages each timing over
+multiple independently seeded syntheses.  The resulting histograms and scaling
+plots are written under \code{benchmark/results/} and summarized in
+\code{benchmark/RESULTS.md}.
+
+\benchfig{relative_times_k8_n1000000}{Relative generation time for alphabet
+size $K=8$ and sequence length $n=10^6$. Times are normalized to the fastest
+method in this benchmark run.}{benchmark-relative-k8}
+\benchfig{scaling_k8}{Generation-time scaling with sequence length for
+alphabet size $K=8$ on log-log axes.}{benchmark-scaling-k8}
+
+\begin{table*}[!t]
+\caption{\pkg{BenchmarkTools.jl} generation timings for $K=8$ and $n=10^6$ on the
+development machine. Values are per-synthesis averages within each
+\pkg{BenchmarkTools.jl} trial; the benchmark script used ten syntheses per trial. These
+numbers are machine-specific and should be interpreted primarily as relative
+costs for the configured standard cases.}
+\label{tab:benchmark-k8}
+\centering
+\begin{tabular}{lrrrr}
+\hline
+Method & Time (ms) & Relative & Trial allocations & Trial memory (MiB) \\
+\hline
+\code{MB2} \code{OnOffMarkov} & 13.301 & 1.00 & 480 & 76.33 \\
+\code{MB5} \code{DuplicationMutation} & 22.293 & 1.68 & 90 & 153.35 \\
+\code{MB3} \code{FSS} & 23.347 & 1.76 & 60 & 76.30 \\
+\code{PB4} \code{IntermittentMapSymbols} & 102.039 & 7.67 & 320 & 267.04 \\
+\code{PB1} \code{SpectralFGN} & 117.242 & 8.81 & 490 & 648.52 \\
+\code{PB3} \code{WaveletMarkov} spectral & 150.058 & 11.28 & 730 & 724.83 \\
+\code{MB1c} \code{CalibratedAdditiveMarkov} & 270.006 & 20.30 & 80 & 152.59 \\
+\code{MB4a} \code{HawkesSymbol} & 280.897 & 21.12 & 80 & 152.59 \\
+\code{MB1a} \code{LAMP} & 283.760 & 21.33 & 80 & 152.59 \\
+\code{MB4b} \code{SelfExcitingMass} & 284.050 & 21.36 & 80 & 152.59 \\
+\code{PB2} \code{LGCM} & 439.012 & 33.01 & 1630 & 4348.82 \\
+\code{MB4c} \code{LogitSelfExcitingMass} & 1390.853 & 104.57 & 100 & 152.59 \\
+\code{MB1b} \code{DyadicLAMP} & 1557.556 & 117.10 & 130 & 762.98 \\
+\hline
+\end{tabular}
+\end{table*}
+
+The expected complexity classes are visible, although implementation constants
+are also important.
+Spectral methods pay for FFTs and sorting and scale near $O(n\log n)$.
+Finite-history additive and self-exciting methods pay for their memory window.
+Dyadic buckets trade exact history access for a scalable approximation, but the
+current MB1b implementation still has a large constant factor.  The table
+should therefore be read as engineering evidence, not as an asymptotic result.
+
+The benchmark also reinforces the validation story.  MB2 and MB3 are fast
+because they avoid long history scans, but their interpretation is tied to
+renewal and regime mechanisms.  PB1 is a strong baseline because the latent
+second-order target is simple, even though it pays for FFTs and allocation.  PB2
+becomes expensive for large alphabets because it generates one latent stream per
+symbol and calibrates offsets.  Speed only matters when the generator expresses
+the intended symbolic dependence, and a convincing finite-sample plot is not a
+proof of asymptotic LRD.
+Both pieces of evidence are needed.
+
+
+\section{Limitations and Future Work}
+
+The main limitation is also the main reason for the package design: symbolic LRD
+has several legitimate meanings.  Centered one-hot ACFs and spectra are transparent and
+close to the DNA-indicator literature, but they can understate regime-based,
+recurrence-based, or higher-order dependence.  Future validation should add
+recurrence-time, count-variance, block-entropy, and local-structure diagnostics
+without turning \sfive{} itself into an estimator package.
+
+Several generators are intentionally research prototypes.  MB4a is retained as
+a cautionary normalized-excitation baseline rather than a recommended generator.
+MB4b and MB4c are stronger candidates, but still need a cleaner route from
+power-law excitation to a stable symbolic spectral slope, perhaps through a
+branching-process or count-process formulation before final categorical
+sampling.  MB5 needs a better separation between local duplication patches and
+long-lag copying.  MB3 needs a marginal-stabilized renewal construction.  A
+promising variant would retain heavy-tailed renewal or intensity dynamics but
+add finite-sample marginal calibration, for example by generating candidate
+renewal events and then thinning, accepting, or allocating emissions against
+target symbol counts.  That should probably be exposed as a calibrated MB3
+variant rather than silently replacing the current FSS model, because the
+current model's scientific identity is the competition among independent
+fractal renewal streams.  PB3 would benefit from calibration that maximizes
+contrast among regime stationary distributions while preserving requested local
+transition matrices.
+
+This is why the package is designed to expose weaknesses rather than hide them.
+A symbolic LRD method should fail visibly when its mechanism does not support the
+claim being made.  The next iteration should make those failures more diagnostic
+and, where possible, turn them into better generators.
+
+\section{Reproducibility Artifacts}
+
+The paper is built from retained scripts and result artifacts.  Validation
+figures are produced by scripts under \code{validation/}, with aggregate tables and plots
+written under \code{validation/results/lrd\_diagnostics/}.  Benchmark tables and
+plots are produced by \code{benchmark/benchmarks.jl} in its separate
+\pkg{BenchmarkTools.jl} project, with extended scaling controlled by explicit
+environment flags so rare runs are not part of ordinary tests.  The paper and
+annotated bibliography are built by \code{Paper\_s4/Makefile}, which writes
+LaTeX intermediates to \code{Paper\_s4/Tex/}.  The makefile also rsyncs the
+production validation and benchmark plots from the package repository into
+\code{Paper\_s4/Plots/} before compiling.
+
+Reference provenance is part of the artifact.  Downloaded papers are kept
+outside the public repository, while \code{Paper\_s4/DOWNLOAD.mn} records match
+status and private-store paths.  The BibTeX database was checked with
+\pkg{PaperFetch.jl} in online check-only mode; the check was used to correct
+clear metadata conflicts without downloading additional PDFs.  This keeps the
+public repository lightweight while preserving an audit trail for the literature
+used to construct and interpret the generators.
+
+\section{Conclusion}
+
+\sfive{} is a reproducible workbench for synthesizing long-memory symbolic
+data without treating symbols as numbers.  The package provides a common API,
+explicit mechanisms, validation scripts, and benchmarks for property-based and
+model-based generators.  It is useful for LRD
+estimator testing, entropy and string-method test sets, controlled
+machine-learning stress tests, synthetic event-log generation,
+privacy-preserving simulation, anomaly and fake-source detection studies, and
+workload modeling for symbolic streams.
+
+The methodological point, and the narrative thread of the paper, is that for
+symbolic LRD a parameter label is not enough.  We need to know the marginal, the
+local structure, the mechanism, the transformation, the finite memory limit, and
+the diagnostic used to judge the output.  Those pieces need to be explicit; no
+single generator supplies all of them.  Future work should strengthen
+correlation-calibrated symbolic generators, add exact numerical latent sources,
+and connect the validation evidence to external estimator packages while keeping
+\sfive{} focused on reproducible synthesis.
+\appendices
+\section{Slow Convergence of Averages Under LRD}
+
+Long-range dependence changes how empirical averages stabilize. For an iid or
+short-range dependent scalar process, the variance of a sample mean typically
+scales as \(O(n^{-1})\), giving the familiar \(n^{-1/2}\) standard-error
+rate. If a stationary scalar process \(Z_t\) has autocovariance
+\begin{equation}
+  \gamma(h) \sim c_\gamma h^{-\beta}, \qquad 0<\beta<1,
+\end{equation}
+then the covariance terms in the sample mean do not sum to a constant. Instead,
+\begin{align}
+  \operatorname{Var}(\bar Z_n)
+  &= \frac{1}{n^2}
+     \left[n\gamma(0)+2\sum_{h=1}^{n-1}(n-h)\gamma(h)\right] \\
+  &\sim C n^{-\beta},
+\end{align}
+for a positive constant \(C\) when the tail coefficient is positive
+\cite{beran1994_statistics,samorodnitsky2006_long,pipiras2017_long}. Thus the
+standard error decays as \(n^{-\beta/2}\), rather than \(n^{-1/2}\). In
+Hurst-parameter notation, \(\beta=2-2H\), so the standard error behaves like
+\(n^{H-1}\). For \(H=0.8\), for example, the standard error is of order
+\(n^{-0.2}\), so increasing the sequence length by a factor of 100 only reduces
+the typical average error by about a factor of \(100^{-0.2}\approx 0.40\),
+not by a factor of 10.
+
+The same calculation applies directly to marginal estimation for symbolic
+sequences. For alphabet symbol \(a_j\), define the indicator
+\begin{equation}
+  I_{j,t}=\mathbf{1}\{X_t=a_j\}, \qquad
+  \hat p_j = \frac{1}{n}\sum_{t=1}^{n} I_{j,t}.
+\end{equation}
+If the centered indicator process \(I_{j,t}-p_j\) has autocovariance
+\(\gamma_j(h)\sim c_jh^{-\beta_j}\), then
+\begin{equation}
+  \operatorname{Var}(\hat p_j) \sim C_j n^{-\beta_j}.
+\end{equation}
+This is much larger than the iid multinomial approximation
+\(p_j(1-p_j)/n\) at large \(n\). Equivalently, the effective number of
+independent observations grows sublinearly; up to constants, an LRD sequence
+with exponent \(\beta\) can behave like only \(n_{\mathrm{eff}}\propto
+n^\beta\) independent observations for mean estimation. The exact constant
+depends on the full autocorrelation function, not only on its exponent, so this
+scaling should be read as an order-of-magnitude guide rather than a replacement
+for a generator-specific uncertainty calculation.
+
+This has two practical consequences for the marginal-control validation in
+Section~\ref{sec:validation}. First, a histogram from a long symbolic sequence
+can still show visible departures from the requested marginal even when the
+generator has the right long-run target. These departures need not disappear at
+the iid \(n^{-1/2}\) rate. Second, a classical multinomial chi-squared test
+treats the counts as though they came from \(n\) independent draws. For LRD
+sequences this can make p-values too small and can overstate the evidence
+against the target marginal. The ESS-adjusted statistic used here is an approximate
+correction: it reduces the nominal sample size using the observed one-hot
+autocorrelation. It remains approximate, because a full dependent multinomial
+test would require the joint covariance structure of the count vector, but it is
+a guard against interpreting slow LRD convergence as an immediate
+marginal-control failure.
+
+Uniform targets are still valuable in this setting. They keep expected bin
+counts away from zero and make deviations visually comparable across symbols.
+However, the right interpretation is diagnostic rather than absolute: rank-binned
+methods may match the full-sample marginal almost exactly while the trimmed
+interior fluctuates, and process-based methods may require many independent
+replicates before their average histogram settles. Trimming the first and last
+10\% reduces startup and terminal edge effects, but it does not remove the slow
+convergence caused by long memory itself.
+
+
+\subsection{Uniform Marginal Histograms}
+
+The validation script writes a complete histogram grid for all methods, but the
+paper includes only the worst trimmed-total-variation case from the current
+validation run. The remaining methods are summarized by the marginal table in
+the main validation section and have smaller deviations from the target uniform
+marginal. Figure~\ref{fig:uniform-marginal-worst} shows the mean trimmed
+empirical symbol frequencies for that worst case; error bars show one replicate
+standard deviation and the dashed red line marks the intended frequency \(1/K\).
+
+\begin{figure*}[!t]
+\centering
+\IfFileExists{\marginalpath/production/marginal/MB3_FSS_uniform_marginal_histogram_k8.pdf}{%
+  \includegraphics[width=0.72\textwidth]{\marginalpath/production/marginal/MB3_FSS_uniform_marginal_histogram_k8.pdf}%
+}{%
+  \fbox{\parbox{0.72\textwidth}{\centering Missing generated marginal production
+  histogram PDF. Run \code{julia --project=. validation/marginal\_control.jl}.}}%
+}
+\caption{Worst-case uniform marginal validation histogram for \(K=8\) in the
+current validation run. The full generated grid is retained as a validation
+artifact, but only this panel is included here because the other methods are
+closer to the target marginal.}
+\label{fig:uniform-marginal-worst}
+\end{figure*}
+
+\section{Transformations of LRD Processes}
+
+Let $Z_t$ be a real-valued, zero-mean stationary process with autocovariance
+\begin{equation}
+  \gamma_Z(k) \sim c k^{-\beta}, \qquad 0 < \beta < 1.
+\end{equation}
+For a linear transformation $Y_t = aZ_t + b$ with $a \ne 0$,
+\begin{equation}
+  \gamma_Y(k) = a^2 \gamma_Z(k),
+\end{equation}
+so the LRD exponent is unchanged.
+
+\subsection{Linear Maps and Vector Encodings}
+
+For vector-valued encodings, let \(\vect{Y}_t = B\vect{e}(X_t)\), where
+\(\vect{e}(a_i)\) is the
+\(i\)th coordinate vector and \(B\) is a fixed matrix. If the centered indicator
+covariance matrix
+\begin{equation}
+  \Gamma_I(k)=
+  \mathbb{E}\left[
+    (\vect{e}(X_t)-\vect{p})(\vect{e}(X_{t+k})-\vect{p})^\top
+  \right]
+\end{equation}
+has entries with a common power-law tail, then
+\begin{equation}
+  \Gamma_{\vect{Y}}(k)=B\Gamma_I(k)B^\top.
+\end{equation}
+A scalar numerical encoding is the special case \(B=\vect{b}^\top\). This can preserve a
+tail if \(\vect{b}\) has nonzero projection on the long-memory eigenspace of
+\(\Gamma_I(k)\), but it can also cancel or hide dependence. This is one reason
+arbitrary scalar DNA walks or word-index encodings can be misleading, and why
+\sfive{} defaults to centered one-hot diagnostics \cite{voss1992_evolution}.
+
+\subsection{Gaussian Nonlinear Transformations}
+
+For nonlinear transformations, preservation depends on both the function and the
+law of the latent process. The cleanest classical result is for a stationary
+standard Gaussian process $Z_t$ with correlation
+\begin{equation}
+  r(k) \sim c k^{-\beta}.
+\end{equation}
+Let $h$ be square-integrable under the standard normal law and centered so that
+\(\mathbb{E}h(Z)=0\). Its Hermite expansion is
+\begin{equation}
+  h(x) = \sum_{q=0}^{\infty} \frac{J_q}{q!} H_q(x),
+  \qquad
+  J_q=\mathbb{E}[h(Z)H_q(Z)],
+\end{equation}
+where $H_q$ is the $q$th Hermite polynomial. The Hermite rank $m$ is the first
+positive $q$ with $J_q\ne0$. Using orthogonality of Hermite polynomials for
+joint Gaussian variables,
+\begin{equation}
+  \operatorname{Cov}(h(Z_t),h(Z_{t+k}))
+  =
+  \sum_{q=m}^{\infty} \frac{J_q^2}{q!} r(k)^q.
+\end{equation}
+Thus, when the first nonzero term dominates,
+\begin{equation}
+  \operatorname{Cov}(h(Z_t),h(Z_{t+k}))
+  \sim
+  \frac{J_m^2}{m!} c^m k^{-m\beta}.
+\end{equation}
+The transformed process remains covariance-LRD only when $m\beta<1$.
+Otherwise the covariance tail becomes summable even though the latent process
+was LRD. This Hermite-rank principle underlies classical non-central limit
+theory for nonlinear functions of Gaussian LRD processes
+\cite{dobrushin1979_non,taqqu1975_weak,breuer1983_central,arcones1994_limit}.
+
+\subsection{Thresholds, Quantization, and Indicators}
+
+Quantization is a nonlinear map. For a binary threshold
+\begin{equation}
+  Y_t=\mathbf{1}\{Z_t\le q\}-\Phi(q),
+\end{equation}
+the first Hermite coefficient is
+\begin{equation}
+  J_1 = \mathbb{E}[Y_t Z_t] = -\phi(q),
+\end{equation}
+which is nonzero for finite $q$. Hence a single Gaussian threshold usually has
+Hermite rank one and preserves the covariance exponent:
+\begin{equation}
+  \operatorname{Cov}(Y_t,Y_{t+k}) \sim \phi(q)^2 r(k).
+\end{equation}
+For a multi-bin quantizer, the centered indicator for bin
+\((q_{i-1},q_i]\) has first Hermite coefficient
+\begin{equation}
+  J_{1,i} =
+  \mathbb{E}\left[
+      \left(\mathbf{1}\{q_{i-1}<Z\le q_i\}-p_i\right)Z
+  \right]
+  =
+  \phi(q_{i-1})-\phi(q_i),
+\end{equation}
+with the convention that $\phi(\pm\infty)=0$. Interior symmetric bins can have
+small or zero first coefficient, in which case higher Hermite terms can dominate
+at observable scales. Rare bins can also have weak finite-sample diagnostics
+because their indicator variance is small and long-lag estimates have high
+relative noise.
+
+This analysis explains why PB1 can often preserve a visible power-law in common
+symbol indicators, while some symbols or transformations may look weaker. It
+also explains why PB2's argmax transform is harder to reason about: the emitted
+indicator is a nonlinear function of a $K$-dimensional Gaussian vector, and its
+effective Hermite rank depends on the offsets, marginal probabilities, and
+symmetries among latent streams.
+
+\subsection{Markov Regime Transformations}
+
+PB3 introduces another layer: a latent LRD driver determines a regime process
+$R_t$, and symbols are emitted through regime-specific Markov chains. If
+\(R_t\) has long memory and the stationary distribution vectors
+\(\vect{\pi}^{(r)}\) of the
+matrices $P^{(r)}$ differ across regimes, then a symbol indicator can inherit
+part of the regime dependence through
+\begin{equation}
+  \mathbb{E}[\mathbf{1}\{X_t=a_j\}\mid R_t=r]\approx \pi^{(r)}_j.
+\end{equation}
+However, if all regimes have the same stationary distribution, the first-order
+symbol indicators may be nearly blind to the regime process even though
+higher-order local structure is changing. In that case, diagnostics based only
+on one-hot autocorrelation can understate the dependence created by the latent
+driver. This motivates validating both latent regimes and emitted symbols.
+
+\subsection{Non-Gaussian Latent Processes}
+
+The Hermite argument does not apply directly to intermittent maps or
+heavy-tailed renewal mechanisms. For such processes, transformations can alter
+dependence through changes in laminar-state visibility, tail truncation, and
+finite-sample scale range. Intermittent-map quantization may emphasize laminar
+episodes if a bin isolates the sticky region near zero, or weaken them if rank
+binning spreads laminar values across symbols. Heavy-tailed on/off and renewal
+models can preserve count-process LRD while individual symbol autocorrelations
+are noisy or dominated by rare-event effects.
+
+The practical conclusion for \sfive{} is conservative. The package
+does not claim that a nominal parameter always determines the finite symbolic
+ACF exponent. Instead it records the mechanism, exposes latent outputs where
+they exist, and produces validation evidence at the numerical and symbolic
+levels.
+
+\bibliographystyle{IEEEtran}
+\bibliography{references/s5_references}
+
+\end{document}

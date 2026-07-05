@@ -1,0 +1,1 @@
+{"headers":{"User-Agent":"PaperFetch.jl/0.2.0 (https://github.com/mroughan/PaperFetch.jl)"},"format":"json","url":"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=simulation%20of%20fractional%20brownian%20motion%20dieker&retmode=json&retmax=3&tool=PaperFetch&email=matthew.roughan%40adelaide.edu.au","cached_at":"2026-07-03T08:48:42.276"}

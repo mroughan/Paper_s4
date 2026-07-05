@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<feed xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/" xmlns:arxiv="http://arxiv.org/schemas/atom" xmlns="http://www.w3.org/2005/Atom">
+  <id>https://arxiv.org/api/BGyEVlvUwwQs2+GZn5YSxcCMSag</id>
+  <title>arXiv Query: search_query=ti:a OR all:model OR all:of OR all:genome OR all:evolution OR all:by OR all:duplication OR all:mutation OR all:and OR all:fragmentation&amp;id_list=&amp;start=0&amp;max_results=3</title>
+  <updated>2026-07-02T23:19:35Z</updated>
+  <link href="https://arxiv.org/api/query?search_query=ti:a+OR+(all:model+OR+(all:of+OR+(all:genome+OR+(all:evolution+OR+(all:by+OR+(all:duplication+OR+(all:mutation+OR+(all:and+OR+all:fragmentation))))))))&amp;start=0&amp;max_results=3&amp;id_list=" type="application/atom+xml"/>
+  <opensearch:itemsPerPage>3</opensearch:itemsPerPage>
+  <opensearch:totalResults>1296924</opensearch:totalResults>
+  <opensearch:startIndex>0</opensearch:startIndex>
+  <entry>
+    <id>http://arxiv.org/abs/2205.05897v1</id>
+    <title>CAGI, the Critical Assessment of Genome Interpretation, establishes progress and prospects for computational genetic variant interpretation methods</title>
+    <updated>2022-05-12T06:34:39Z</updated>
+    <link href="https://arxiv.org/abs/2205.05897v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2205.05897v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>The Critical Assessment of Genome Interpretation (CAGI) aims to advance the state of the art for computational prediction of genetic variant impact, particularly those relevant to disease. The five complete editions of the CAGI community experiment comprised 50 challenges, in which participants made blind predictions of phenotypes from genetic data, and these were evaluated by independent assessors. Overall, results show that while current methods are imperfect, they have major utility for research and clinical applications. Missense variant interpretation methods are able to estimate biochemical effects with increasing accuracy. Performance is particularly strong for clinical pathogenic variants, including some difficult-to-diagnose cases, and extends to interpretation of cancer-related variants. Assessment of methods for regulatory variants and complex trait disease risk is less definitive, and indicates performance potentially suitable for auxiliary use in the clinic. Emerging methods and increasingly large, robust datasets for training and assessment promise further progress ahead.</summary>
+    <category term="q-bio.GN" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-05-12T06:34:39Z</published>
+    <arxiv:comment>For supplementary material, see https://github.com/genomeinterpretation/CAGI50</arxiv:comment>
+    <arxiv:primary_category term="q-bio.GN"/>
+    <arxiv:journal_ref>Genome Biology 25.1 (2024) 1-46</arxiv:journal_ref>
+    <author>
+      <name>The Critical Assessment of Genome Interpretation Consortium</name>
+    </author>
+    <arxiv:doi>10.1186/s13059-023-03113-6</arxiv:doi>
+    <link rel="related" href="https://doi.org/10.1186/s13059-023-03113-6" title="doi"/>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/1501.03632v2</id>
+    <title>Fixation probability of rare nonmutator and evolution of mutation rates</title>
+    <updated>2015-12-11T06:24:35Z</updated>
+    <link href="https://arxiv.org/abs/1501.03632v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/1501.03632v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Although mutations drive the evolutionary process, the rates at which the mutations occur are themselves subject to evolutionary forces. Our purpose here is to understand the role of selection and random genetic drift in the evolution of mutation rates, and we address this question in asexual populations at mutation-selection equilibrium neglecting selective sweeps. Using a multitype branching process, we calculate the fixation probability of a rare nonmutator in a large asexual population of mutators, and find that a nonmutator is more likely to fix when the deleterious mutation rate of the mutator population is high. Compensatory mutations in the mutator population are found to decrease the fixation probability of a nonmutator when the selection coefficient is large. But, surprisingly, the fixation probability changes nonmonotonically with increasing compensatory mutation rate when the selection is mild. Using these results for the fixation probability and a drift-barrier argument, we find a novel relationship between the mutation rates and the population size. We also discuss the time to fix the nonmutator in an adapted population of asexual mutators, and compare our results with experiments.</summary>
+    <category term="q-bio.PE" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2015-01-15T11:10:11Z</published>
+    <arxiv:comment>Accepted in Ecology and Evolution</arxiv:comment>
+    <arxiv:primary_category term="q-bio.PE"/>
+    <arxiv:journal_ref>Ecology and Evolution 6, 755-764 (2016)</arxiv:journal_ref>
+    <author>
+      <name>Ananthu James</name>
+    </author>
+    <author>
+      <name>Kavita Jain</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/1702.06255v1</id>
+    <title>A mathematical model for gene evolution after whole genome duplication</title>
+    <updated>2017-02-21T04:02:40Z</updated>
+    <link href="https://arxiv.org/abs/1702.06255v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/1702.06255v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Whole genome duplication (WGD) is one of the most important events in the molecular evolution of organisms. In fish species, a WGD is considered to have occurred in the ancestral lineage of teleosts. Recent comprehensive ortholog comparisons among teleost genomes have provided useful data and insights into the fate of redundant genes generated by WGD. Based on these data, a mathematical model is proposed to explain the evolutionary scenario of genes after WGD. The model is parameterized taking into account an equilibrium between i) rapid loss of either of the duplicate genes and ii) moderate functional differentiation of each of duplicate genes, both of which are followed by slow gene loss under purifying selection. This model predicts that, in the teleost lineage, a maximum of about 3000 gene pairs may have differentiated functionally during 90 million years after WGD. Thus, the present study provides a possibility that the whole impact of WGD can be quantitatively assessed according to the model parameters, before details of genomic structural changes or functional differentiation are investigated. If the equilibrium model is valid not only for teleosts but also for other lineages that have undergone WGDs, correlations between the assessment indices and evolutionarily significant events, such as the diversification of species or the occurrence of novel phenotypes, could be tested and compared among those lineages.</summary>
+    <category term="q-bio.PE" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2017-02-21T04:02:40Z</published>
+    <arxiv:comment>A total of 12 pages with 2 tables and 4 figures</arxiv:comment>
+    <arxiv:primary_category term="q-bio.PE"/>
+    <author>
+      <name>Yoji Nakamura</name>
+    </author>
+  </entry>
+</feed>

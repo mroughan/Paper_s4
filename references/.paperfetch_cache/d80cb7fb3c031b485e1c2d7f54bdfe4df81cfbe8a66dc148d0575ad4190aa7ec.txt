@@ -1,0 +1,434 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<feed xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/" xmlns:arxiv="http://arxiv.org/schemas/atom" xmlns="http://www.w3.org/2005/Atom">
+  <id>https://arxiv.org/api/QKbRboLy8uXJm7Sh3Cg2cRQy3JE</id>
+  <title>arXiv Query: search_query=ti:the OR all:mystery OR all:of OR all:the OR all:missing OR all:scales OR all:pitfalls OR all:in OR all:the OR all:use OR all:of OR all:fractal OR all:renewal OR all:processes OR all:to OR all:simulate OR all:lrd OR all:processes&amp;id_list=&amp;start=0&amp;max_results=3</title>
+  <updated>2026-07-02T23:22:34Z</updated>
+  <link href="https://arxiv.org/api/query?search_query=ti:the+OR+(all:mystery+OR+(all:of+OR+(all:the+OR+(all:missing+OR+(all:scales+OR+(all:pitfalls+OR+(all:in+OR+(all:the+OR+(all:use+OR+(all:of+OR+(all:fractal+OR+(all:renewal+OR+(all:processes+OR+(all:to+OR+(all:simulate+OR+(all:lrd+OR+all:processes))))))))))))))))&amp;start=0&amp;max_results=3&amp;id_list=" type="application/atom+xml"/>
+  <opensearch:itemsPerPage>3</opensearch:itemsPerPage>
+  <opensearch:totalResults>1883807</opensearch:totalResults>
+  <opensearch:startIndex>0</opensearch:startIndex>
+  <entry>
+    <id>http://arxiv.org/abs/1710.05833v2</id>
+    <title>Multi-messenger Observations of a Binary Neutron Star Merger</title>
+    <updated>2017-10-24T12:03:18Z</updated>
+    <link href="https://arxiv.org/abs/1710.05833v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/1710.05833v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>On 2017 August 17 a binary neutron star coalescence candidate (later designated GW170817) with merger time 12:41:04 UTC was observed through gravitational waves by the Advanced LIGO and Advanced Virgo detectors. The Fermi Gamma-ray Burst Monitor independently detected a gamma-ray burst (GRB 170817A) with a time delay of $\sim$1.7 s with respect to the merger time. From the gravitational-wave signal, the source was initially localized to a sky region of 31 deg$^2$ at a luminosity distance of $40^{+8}_{-8}$ Mpc and with component masses consistent with neutron stars. The component masses were later measured to be in the range 0.86 to 2.26 Msun. An extensive observing campaign was launched across the electromagnetic spectrum leading to the discovery of a bright optical transient (SSS17a, now with the IAU identification of AT 2017gfo) in NGC 4993 (at $\sim$40 Mpc) less than 11 hours after the merger by the One-Meter, Two Hemisphere (1M2H) team using the 1 m Swope Telescope. The optical transient was independently detected by multiple teams within an hour. Subsequent observations targeted the object and its environment. Early ultraviolet observations revealed a blue transient that faded within 48 hours. Optical and infrared observations showed a redward evolution over $\sim$10 days. Following early non-detections, X-ray and radio emission were discovered at the transient's position $\sim$9 and $\sim$16 days, respectively, after the merger. Both the X-ray and radio emission likely arise from a physical process that is distinct from the one that generates the UV/optical/near-infrared emission. No ultra-high-energy gamma-rays and no neutrino candidates consistent with the source were found in follow-up searches. (Abridged)</summary>
+    <category term="astro-ph.HE" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="gr-qc" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2017-10-16T16:57:18Z</published>
+    <arxiv:comment>This is a reproduction of the article published in the Astrophysical Journal Letters, under the terms of the Creative Commons Attribution 3.0 licence</arxiv:comment>
+    <arxiv:primary_category term="astro-ph.HE"/>
+    <arxiv:journal_ref>ApJL, 848:L12, 2017</arxiv:journal_ref>
+    <author>
+      <name> LIGO Scientific Collaboration</name>
+    </author>
+    <author>
+      <name> Virgo Collaboration</name>
+    </author>
+    <author>
+      <name>Fermi GBM</name>
+      <arxiv:affiliation>Deeper, Wider, Faster Program</arxiv:affiliation>
+    </author>
+    <author>
+      <name> INTEGRAL</name>
+      <arxiv:affiliation>Deeper, Wider, Faster Program</arxiv:affiliation>
+    </author>
+    <author>
+      <name>IceCube Collaboration</name>
+      <arxiv:affiliation>Deeper, Wider, Faster Program</arxiv:affiliation>
+    </author>
+    <author>
+      <name>AstroSat Cadmium Zinc Telluride Imager Team</name>
+      <arxiv:affiliation>Deeper, Wider, Faster Program</arxiv:affiliation>
+    </author>
+    <author>
+      <name>IPN Collaboration</name>
+      <arxiv:affiliation>Deeper, Wider, Faster Program</arxiv:affiliation>
+    </author>
+    <author>
+      <name>The Insight-Hxmt Collaboration</name>
+      <arxiv:affiliation>Deeper, Wider, Faster Program</arxiv:affiliation>
+    </author>
+    <author>
+      <name>ANTARES Collaboration</name>
+      <arxiv:affiliation>Deeper, Wider, Faster Program</arxiv:affiliation>
+    </author>
+    <author>
+      <name>The Swift Collaboration</name>
+      <arxiv:affiliation>Deeper, Wider, Faster Program</arxiv:affiliation>
+    </author>
+    <author>
+      <name>AGILE Team</name>
+      <arxiv:affiliation>Deeper, Wider, Faster Program</arxiv:affiliation>
+    </author>
+    <author>
+      <name>The 1M2H Team</name>
+      <arxiv:affiliation>Deeper, Wider, Faster Program</arxiv:affiliation>
+    </author>
+    <author>
+      <name>The Dark Energy Camera GW-EM Collaboration</name>
+      <arxiv:affiliation>Deeper, Wider, Faster Program</arxiv:affiliation>
+    </author>
+    <author>
+      <name>the DES Collaboration</name>
+      <arxiv:affiliation>Deeper, Wider, Faster Program</arxiv:affiliation>
+    </author>
+    <author>
+      <name>The DLT40 Collaboration</name>
+      <arxiv:affiliation>Deeper, Wider, Faster Program</arxiv:affiliation>
+    </author>
+    <author>
+      <name> GRAWITA</name>
+      <arxiv:affiliation>Deeper, Wider, Faster Program</arxiv:affiliation>
+    </author>
+    <author>
+      <name> :</name>
+      <arxiv:affiliation>Deeper, Wider, Faster Program</arxiv:affiliation>
+    </author>
+    <author>
+      <name>GRAvitational Wave Inaf TeAm</name>
+      <arxiv:affiliation>Deeper, Wider, Faster Program</arxiv:affiliation>
+    </author>
+    <author>
+      <name>The Fermi Large Area Telescope Collaboration</name>
+      <arxiv:affiliation>Deeper, Wider, Faster Program</arxiv:affiliation>
+    </author>
+    <author>
+      <name> ATCA</name>
+      <arxiv:affiliation>Deeper, Wider, Faster Program</arxiv:affiliation>
+    </author>
+    <author>
+      <name> :</name>
+      <arxiv:affiliation>Deeper, Wider, Faster Program</arxiv:affiliation>
+    </author>
+    <author>
+      <name>Australia Telescope Compact Array</name>
+      <arxiv:affiliation>Deeper, Wider, Faster Program</arxiv:affiliation>
+    </author>
+    <author>
+      <name> ASKAP</name>
+      <arxiv:affiliation>Deeper, Wider, Faster Program</arxiv:affiliation>
+    </author>
+    <author>
+      <name> :</name>
+      <arxiv:affiliation>Deeper, Wider, Faster Program</arxiv:affiliation>
+    </author>
+    <author>
+      <name>Australian SKA Pathfinder</name>
+      <arxiv:affiliation>Deeper, Wider, Faster Program</arxiv:affiliation>
+    </author>
+    <author>
+      <name>Las Cumbres Observatory Group</name>
+      <arxiv:affiliation>Deeper, Wider, Faster Program</arxiv:affiliation>
+    </author>
+    <author>
+      <name> OzGrav</name>
+      <arxiv:affiliation>Deeper, Wider, Faster Program</arxiv:affiliation>
+    </author>
+    <author>
+      <name> DWF</name>
+      <arxiv:affiliation>Deeper, Wider, Faster Program</arxiv:affiliation>
+    </author>
+    <author>
+      <name> AST3</name>
+    </author>
+    <author>
+      <name>CAASTRO Collaborations</name>
+    </author>
+    <author>
+      <name>The VINROUGE Collaboration</name>
+    </author>
+    <author>
+      <name>MASTER Collaboration</name>
+    </author>
+    <author>
+      <name> J-GEM</name>
+    </author>
+    <author>
+      <name> GROWTH</name>
+    </author>
+    <author>
+      <name> JAGWAR</name>
+    </author>
+    <author>
+      <name>Caltech- NRAO</name>
+    </author>
+    <author>
+      <name> TTU-NRAO</name>
+    </author>
+    <author>
+      <name>NuSTAR Collaborations</name>
+    </author>
+    <author>
+      <name> Pan-STARRS</name>
+    </author>
+    <author>
+      <name>The MAXI Team</name>
+    </author>
+    <author>
+      <name>TZAC Consortium</name>
+    </author>
+    <author>
+      <name>KU Collaboration</name>
+    </author>
+    <author>
+      <name>Nordic Optical Telescope</name>
+    </author>
+    <author>
+      <name> ePESSTO</name>
+    </author>
+    <author>
+      <name> GROND</name>
+    </author>
+    <author>
+      <name>Texas Tech University</name>
+    </author>
+    <author>
+      <name>SALT Group</name>
+    </author>
+    <author>
+      <name> TOROS</name>
+    </author>
+    <author>
+      <name> :</name>
+    </author>
+    <author>
+      <name>Transient Robotic Observatory of the South Collaboration</name>
+    </author>
+    <author>
+      <name>The BOOTES Collaboration</name>
+    </author>
+    <author>
+      <name> MWA</name>
+    </author>
+    <author>
+      <name> :</name>
+    </author>
+    <author>
+      <name>Murchison Widefield Array</name>
+    </author>
+    <author>
+      <name>The CALET Collaboration</name>
+    </author>
+    <author>
+      <name>IKI-GW Follow-up Collaboration</name>
+    </author>
+    <author>
+      <name>H. E. S. S. Collaboration</name>
+    </author>
+    <author>
+      <name>LOFAR Collaboration</name>
+    </author>
+    <author>
+      <name> LWA</name>
+    </author>
+    <author>
+      <name> :</name>
+    </author>
+    <author>
+      <name>Long Wavelength Array</name>
+    </author>
+    <author>
+      <name>HAWC Collaboration</name>
+    </author>
+    <author>
+      <name>The Pierre Auger Collaboration</name>
+    </author>
+    <author>
+      <name>ALMA Collaboration</name>
+    </author>
+    <author>
+      <name>Euro VLBI Team</name>
+    </author>
+    <author>
+      <name>Pi of the Sky Collaboration</name>
+    </author>
+    <author>
+      <name>The Chandra Team at McGill University</name>
+    </author>
+    <author>
+      <name> DFN</name>
+    </author>
+    <author>
+      <name> :</name>
+    </author>
+    <author>
+      <name>Desert Fireball Network</name>
+    </author>
+    <author>
+      <name> ATLAS</name>
+    </author>
+    <author>
+      <name>High Time Resolution Universe Survey</name>
+    </author>
+    <author>
+      <name> RIMAS</name>
+    </author>
+    <author>
+      <name> RATIR</name>
+    </author>
+    <author>
+      <name>SKA South Africa/MeerKAT</name>
+    </author>
+    <arxiv:doi>10.3847/2041-8213/aa91c9</arxiv:doi>
+    <link rel="related" href="https://doi.org/10.3847/2041-8213/aa91c9" title="doi"/>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2210.04940v1</id>
+    <title>The Galactic Chemical Evolution of phosphorus observed with IGRINS</title>
+    <updated>2022-10-10T18:16:50Z</updated>
+    <link href="https://arxiv.org/abs/2210.04940v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2210.04940v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Phosphorus (P) is considered to be one of the key elements for life, making it an important element to look for in the abundance analysis of spectra of stellar systems. Yet, there exists only a handful of spectroscopic studies to estimate the P abundances and investigate its trend across a range of metallicities. We have observed full HK band spectra at a spectral resolving power of R=45,000 with IGRINS instrument. Abundances are determined using SME in combination with 1D MARCS stellar atmosphere models. The investigated sample of stars have reliable stellar parameters estimated using optical FIES spectra (GILD; Jönsson et al. in prep.). In order to determine the P abundances from the 16482.92 Angstrom P line, we take special care of the CO($ν=7-4$) blend. We determine the C, N, O abundances from atomic carbon and a range of non-blended molecular lines (CO, CN, OH) which are aplenty in the H band region of K giant stars, assuring an appropriate modelling of the blending CO($ν=7-4$) line. We present [P/Fe] vs [Fe/H] trend for 38 K giant stars in the metallicity range of -1.2 dex $&lt;$ [Fe/H] $&lt;$ 0.4 dex. We find that our trend matches well with the compiled literature sample of prominently dwarf stars and limited number of giant stars. Our trend is found to be higher by $\sim$ 0.05 - 0.1 dex compared to the theoretical chemical evolution trend in Cescutti et al. 2012 resulting from core collapse supernova (type II) of massive stars with the P yields from Kobayashi et al. (2006) arbitrarily increased by a factor of 2.75. Thus the enhancement factor might need to be $\sim$ 0.05 - 0.1 dex higher to match our trend. We also find an empirically determined primary behaviour for phosphorus. Furthermore, the phosphorus abundance is found to be elevated by $\sim$ 0.6 - 0.9 dex in two metal poor s-enriched stars compared to the theoretical chemical evolution trend.</summary>
+    <category term="astro-ph.SR" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="astro-ph.GA" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-10-10T18:16:50Z</published>
+    <arxiv:comment>13 pages, 9 figures, accepted for publication in Astronomy and Astrophysics</arxiv:comment>
+    <arxiv:primary_category term="astro-ph.SR"/>
+    <arxiv:journal_ref>A&amp;A 668, A88 (2022)</arxiv:journal_ref>
+    <author>
+      <name>G. Nandakumar</name>
+    </author>
+    <author>
+      <name>N. Ryde</name>
+    </author>
+    <author>
+      <name>M. Montelius</name>
+    </author>
+    <author>
+      <name>B. Thorsbro</name>
+    </author>
+    <author>
+      <name>H. Jönsson</name>
+    </author>
+    <author>
+      <name>G. Mace</name>
+    </author>
+    <author>
+      <name>Lund Observatory</name>
+    </author>
+    <author>
+      <name>Department of Astronomy</name>
+    </author>
+    <author>
+      <name>Theoretical Physics</name>
+    </author>
+    <author>
+      <name>Lund University</name>
+    </author>
+    <author>
+      <name>Box 43</name>
+    </author>
+    <author>
+      <name>SE-221 00 Lund</name>
+    </author>
+    <author>
+      <name> Sweden</name>
+    </author>
+    <author>
+      <name>Kapteyn Astronomical Institute</name>
+    </author>
+    <author>
+      <name>University of Groningen</name>
+    </author>
+    <author>
+      <name>Landleven 12</name>
+    </author>
+    <author>
+      <name>NL-9747 AD Groningen</name>
+    </author>
+    <author>
+      <name>the Netherlands</name>
+    </author>
+    <author>
+      <name>Department of Astronomy</name>
+    </author>
+    <author>
+      <name>School of Science</name>
+    </author>
+    <author>
+      <name>The University of Tokyo</name>
+    </author>
+    <author>
+      <name>7-3-1 Hongo</name>
+    </author>
+    <author>
+      <name> Bunkyo-ku</name>
+    </author>
+    <author>
+      <name>Tokyo 113-0033</name>
+    </author>
+    <author>
+      <name> Japan</name>
+    </author>
+    <author>
+      <name>Materials Science</name>
+    </author>
+    <author>
+      <name>Applied Mathematics</name>
+    </author>
+    <author>
+      <name>Malmö University</name>
+    </author>
+    <author>
+      <name>SE-205 06 Malmö</name>
+    </author>
+    <author>
+      <name> Sweden</name>
+    </author>
+    <author>
+      <name>Department of Astronomy</name>
+    </author>
+    <author>
+      <name>McDonald Observatory</name>
+    </author>
+    <author>
+      <name>The University of Texas</name>
+    </author>
+    <author>
+      <name> Austin</name>
+    </author>
+    <author>
+      <name>TX 78712</name>
+    </author>
+    <author>
+      <name> USA</name>
+    </author>
+    <arxiv:doi>10.1051/0004-6361/202244724</arxiv:doi>
+    <link rel="related" href="https://doi.org/10.1051/0004-6361/202244724" title="doi"/>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2410.07508v2</id>
+    <title>MOLA: Enhancing Industrial Process Monitoring Using Multi-Block Orthogonal Long Short-Term Memory Autoencoder</title>
+    <updated>2024-11-28T01:38:54Z</updated>
+    <link href="https://arxiv.org/abs/2410.07508v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2410.07508v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>In this work, we introduce MOLA: a Multi-block Orthogonal Long short-term memory Autoencoder paradigm, to conduct accurate, reliable fault detection of industrial processes. To achieve this, MOLA effectively extracts dynamic orthogonal features by introducing an orthogonality-based loss function to constrain the latent space output. This helps eliminate the redundancy in the features identified, thereby improving the overall monitoring performance. On top of this, a multi-block monitoring structure is proposed, which categorizes the process variables into multiple blocks by leveraging expert process knowledge about their associations with the overall process. Each block is associated with its specific Orthogonal Long short-term memory Autoencoder model, whose extracted dynamic orthogonal features are monitored by distance-based Hotelling's $T^2$ statistics and quantile-based cumulative sum (CUSUM) designed for multivariate data streams that are nonparametric, heterogeneous in nature. Compared to having a single model accounting for all process variables, such a multi-block structure improves the overall process monitoring performance significantly, especially for large-scale industrial processes. Finally, we propose an adaptive weight-based Bayesian fusion (W-BF) framework to aggregate all block-wise monitoring statistics into a global statistic that we monitor for faults, with the goal of improving fault detection speed by assigning weights to blocks based on the sequential order where alarms are raised. We demonstrate the efficiency and effectiveness of our MOLA framework by applying it to the Tennessee Eastman Process and comparing the performance with various benchmark methods.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2024-10-10T00:49:43Z</published>
+    <arxiv:comment>24 pages, 9 figures, 11 tables. Submitted to Processes</arxiv:comment>
+    <arxiv:primary_category term="cs.LG"/>
+    <arxiv:journal_ref>Processes 2024, 12(12), 2824</arxiv:journal_ref>
+    <author>
+      <name>Fangyuan Ma</name>
+    </author>
+    <author>
+      <name>Cheng Ji</name>
+    </author>
+    <author>
+      <name>Jingde Wang</name>
+    </author>
+    <author>
+      <name>Wei Sun</name>
+    </author>
+    <author>
+      <name>Xun Tang</name>
+    </author>
+    <author>
+      <name>Zheyu Jiang</name>
+    </author>
+    <arxiv:doi>10.3390/pr12122824</arxiv:doi>
+    <link rel="related" href="https://doi.org/10.3390/pr12122824" title="doi"/>
+  </entry>
+</feed>

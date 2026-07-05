@@ -1,0 +1,87 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<feed xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/" xmlns:arxiv="http://arxiv.org/schemas/atom" xmlns="http://www.w3.org/2005/Atom">
+  <id>https://arxiv.org/api/bd/PJt5/UxzG0z8yNLGI4dgA3SQ</id>
+  <title>arXiv Query: search_query=ti:entropy OR all:of OR all:symbolic OR all:sequences OR all:with OR all:long OR all:range OR all:correlations&amp;id_list=&amp;start=0&amp;max_results=3</title>
+  <updated>2026-07-02T23:21:13Z</updated>
+  <link href="https://arxiv.org/api/query?search_query=ti:entropy+OR+(all:of+OR+(all:symbolic+OR+(all:sequences+OR+(all:with+OR+(all:long+OR+(all:range+OR+all:correlations))))))&amp;start=0&amp;max_results=3&amp;id_list=" type="application/atom+xml"/>
+  <opensearch:itemsPerPage>3</opensearch:itemsPerPage>
+  <opensearch:totalResults>718604</opensearch:totalResults>
+  <opensearch:startIndex>0</opensearch:startIndex>
+  <entry>
+    <id>http://arxiv.org/abs/1412.3692v1</id>
+    <title>Entropy and long-range correlations in random symbolic sequences</title>
+    <updated>2014-12-06T17:26:17Z</updated>
+    <link href="https://arxiv.org/abs/1412.3692v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/1412.3692v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>The goal of this paper is to develop an estimate for the entropy of random long-range correlated symbolic sequences with elements belonging to a finite alphabet. As a plausible model, we use the high-order additive stationary ergodic Markov chain. Supposing that the correlations between random elements of the chain are weak we express the differential entropy of the sequence by means of the symbolic pair correlation function. We also examine an algorithm for estimating the differential entropy of finite symbolic sequences. We show that the entropy contains two contributions, the correlation and fluctuation ones. The obtained analytical results are used for numerical evaluation of the entropy of written English texts and DNA nucleotide sequences. The developed theory opens the way for constructing a more consistent and sophisticated approach to describe the systems with strong short- and weak long-range correlations.</summary>
+    <category term="cs.IT" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cond-mat.dis-nn" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cond-mat.stat-mech" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="physics.data-an" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2014-12-06T17:26:17Z</published>
+    <arxiv:comment>9 pages, 3 fifures. arXiv admin note: substantial text overlap with arXiv:1411.2761</arxiv:comment>
+    <arxiv:primary_category term="cs.IT"/>
+    <author>
+      <name>S. S. Melnik</name>
+    </author>
+    <author>
+      <name>O. V. Usatenko</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2111.00293v2</id>
+    <title>Long-Range Route-planning for Autonomous Vehicles in the Polar Oceans</title>
+    <updated>2021-11-20T16:36:45Z</updated>
+    <link href="https://arxiv.org/abs/2111.00293v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2111.00293v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>There is an increasing demand for piloted autonomous underwater vehicles (AUVs) to operate in polar ice conditions. At present, AUVs are deployed from ships and directly human-piloted in these regions, entailing a high carbon cost and limiting the scope of operations. A key requirement for long-term autonomous missions is a long-range route planning capability that is aware of the changing ice conditions. In this paper we address the problem of automating long-range route-planning for AUVs operating in the Southern Ocean. We present the route-planning method and results showing that efficient, ice-avoiding, long-distance traverses can be planned.</summary>
+    <category term="cs.RO" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2021-10-30T17:28:44Z</published>
+    <arxiv:comment>Submitted to the AMS Journal of Atmospheric and Oceanic Technology</arxiv:comment>
+    <arxiv:primary_category term="cs.RO"/>
+    <author>
+      <name>Maria Fox</name>
+    </author>
+    <author>
+      <name>Michael Meredith</name>
+    </author>
+    <author>
+      <name>J. Alexander Brearley</name>
+    </author>
+    <author>
+      <name>Dan Jones</name>
+    </author>
+    <author>
+      <name>Derek Long</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2605.06924v1</id>
+    <title>A$^2$RD: Agentic Autoregressive Diffusion for Long Video Consistency</title>
+    <updated>2026-05-07T20:35:46Z</updated>
+    <link href="https://arxiv.org/abs/2605.06924v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2605.06924v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Synthesizing consistent and coherent long video remains a fundamental challenge. Existing methods suffer from semantic drift and narrative collapse over long horizons. We present A$^2$RD, an Agentic Auto-Regressive Diffusion architecture that decouples creative synthesis from consistency enforcement. A$^2$RD formulates long video synthesis as a closed-loop process that synthesizes and self-improves video segment-by-segment through a Retrieve--Synthesize--Refine--Update cycle. It comprises three core components: (i) Multimodal Video Memory that tracks video progression across modalities; (ii) Adaptive Segment Generation that switches among generation modes for natural progression and visual consistency; and (iii) Hierarchical Test-Time Self-Improvement that self-improves each segment at frame and video levels to prevent error propagation. We further introduce LVBench-C, a challenging benchmark with non-linear entity and environment transitions to stress-test long-horizon consistency. Across public and LVBench-C benchmarks spanning one- to ten-minute videos, A$^2$RD outperforms state-of-the-art baselines by up to 30% in consistency and 20% in narrative coherence. Human evaluations corroborate these gains while also highlighting notable improvements in motion and transition smoothness.</summary>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-05-07T20:35:46Z</published>
+    <arxiv:comment>Project page: http://dxlong2000.github.io/AARD</arxiv:comment>
+    <arxiv:primary_category term="cs.CV"/>
+    <author>
+      <name>Do Xuan Long</name>
+    </author>
+    <author>
+      <name>Yale Song</name>
+    </author>
+    <author>
+      <name>Min-Yen Kan</name>
+    </author>
+    <author>
+      <name>Tomas Pfister</name>
+    </author>
+    <author>
+      <name>Long T. Le</name>
+    </author>
+  </entry>
+</feed>

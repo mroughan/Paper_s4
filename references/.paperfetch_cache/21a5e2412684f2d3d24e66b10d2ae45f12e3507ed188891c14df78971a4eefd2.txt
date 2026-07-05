@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<feed xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/" xmlns:arxiv="http://arxiv.org/schemas/atom" xmlns="http://www.w3.org/2005/Atom">
+  <id>https://arxiv.org/api/Np38/XA4zdT0svlcxM5TVVZRgkI</id>
+  <title>arXiv Query: search_query=ti:simulation OR all:of OR all:fractional OR all:brownian OR all:motion&amp;id_list=&amp;start=0&amp;max_results=3</title>
+  <updated>2026-07-02T23:18:38Z</updated>
+  <link href="https://arxiv.org/api/query?search_query=ti:simulation+OR+(all:of+OR+(all:fractional+OR+(all:brownian+OR+all:motion)))&amp;start=0&amp;max_results=3&amp;id_list=" type="application/atom+xml"/>
+  <opensearch:itemsPerPage>3</opensearch:itemsPerPage>
+  <opensearch:totalResults>249798</opensearch:totalResults>
+  <opensearch:startIndex>0</opensearch:startIndex>
+  <entry>
+    <id>http://arxiv.org/abs/2411.15681v2</id>
+    <title>Strassen's local law of the iterated logarithm for the generalized fractional Brownian motion</title>
+    <updated>2026-05-20T03:26:31Z</updated>
+    <link href="https://arxiv.org/abs/2411.15681v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2411.15681v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Let $X:=\{X(t)\}_{t\ge0}$ be a generalized fractional Brownian motion given by $$
+  \{X(t)\}_{t\ge0}\overset{d}{=}\left\{ \int_{\mathbb R} \left((t-u)_+^α-(-u)_+^α \right) |u|^{-γ/2} B(du) \right\}_{t\ge0}, $$ with parameters $γ\in (0, 1)$ and $α\in \left(-1/2+ γ/2, \, 1/2+γ/2\right)$. This process was introduced by Pang and Taqqu (2019) as the scaling limit of a class of power-law shot noise processes. The parameters $α$ and $γ$ govern the probabilistic and statistical properties of $X$. In particular, the parameter $γ$ breaks the stationarity of increments of $X$.
+  In this paper, we establish Strassen's local law of the iterated logarithm for $X$ at a given point $t_0 \in (0, \infty)$. This result describes explicitly the roles played by the parameters $α, γ$, and the location $t_0$. Our theorem differs from the earlier Strassen's {global law of the iterated logarithm} for $X$ proved by Ichiba, Pang and Taqqu (2022).</summary>
+    <category term="math.PR" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2024-11-24T01:57:38Z</published>
+    <arxiv:comment>19 pages; Keywords and Phrases: Gaussian self-similar process; Strassen's {law of the iterated logarithm}; generalized fractional Brownian motion; Lamperti's transformation</arxiv:comment>
+    <arxiv:primary_category term="math.PR"/>
+    <author>
+      <name>Ran Wang</name>
+    </author>
+    <author>
+      <name>Yimin Xiao</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/1805.10838v1</id>
+    <title>Approximation of Fractional Order Conflict-Controlled Systems</title>
+    <updated>2018-05-28T09:36:57Z</updated>
+    <link href="https://arxiv.org/abs/1805.10838v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/1805.10838v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>We consider a conflict-controlled dynamical system described by a nonlinear ordinary fractional differential equation with the Caputo derivative of an order $α\in (0, 1).$ Basing on the finite-difference Grünwald-Letnikov formulas, we propose an approximation of the considered system by a system described by a functional-differential equation of a retarded type. A mutual aiming procedure between the initial conflict-controlled system and the approximating system is given that guarantees the desired proximity between their motions. This procedure allows to apply, via the approximating system, the results obtained for functional-differential systems for solving control problems in fractional order systems. Examples are considered, results of numerical simulations are presented.</summary>
+    <category term="math.OC" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2018-05-28T09:36:57Z</published>
+    <arxiv:comment>Submitted to Progress in Fractional Differentiation and Applications</arxiv:comment>
+    <arxiv:primary_category term="math.OC"/>
+    <arxiv:journal_ref>Progress in Fractional Differentiation and Applications, volume 4, issue 2, 2019</arxiv:journal_ref>
+    <author>
+      <name>Mikhail Gomoyunov</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/math/0602356v2</id>
+    <title>On the connection between Molchan-Golosov and Mandelbrot-Van Ness representations of fractional Brownian motion</title>
+    <updated>2007-05-04T11:58:29Z</updated>
+    <link href="https://arxiv.org/abs/math/0602356v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/math/0602356v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>  We proof a connection between the generalized Molchan-Golosov integral transform and the generalized Mandelbrot-Van Ness integral transform of fractional Brownian motion (fBm). The former changes fBm of arbitrary Hurst index K into fBm of index H by integrating over [0,t], whereas the latter requires integration over (-infty,t].</summary>
+    <category term="math.PR" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2006-02-16T16:06:16Z</published>
+    <arxiv:comment>14 pages. This article can be considered as an appendix of the article "Transformation formulas for fractional Brownian motion" by C. Jost (published in Stochastic Processes and their Applications). The title changed slightly from v1 to v2. The v2 is the final version and will appear in the Journal of Integral Equations and Applications</arxiv:comment>
+    <arxiv:primary_category term="math.PR"/>
+    <author>
+      <name>Celine Jost</name>
+      <arxiv:affiliation>University of Helsinki</arxiv:affiliation>
+    </author>
+  </entry>
+</feed>
