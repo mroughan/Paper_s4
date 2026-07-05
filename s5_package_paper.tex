@@ -213,17 +213,22 @@ advertised exponent.
 Numerical LRD synthesis provides the technical starting point.  Spectral fGn
 approximations \cite{paxson1997_fast}, exact and approximate Gaussian simulation
 \cite{wood1994_simulation,dietrich1997_fast,dieker2004_simulation,coeurjolly2000_simulation},
-wavelet and multiscale methods \cite{roughan2000_real}, intermittent maps
-\cite{millan2021_on}, mixtures of short-memory components
+wavelet and multiscale methods
+\cite{wornell1992_estimation,kaplan1993_fractal,roughan2000_real},
+intermittent maps \cite{millan2021_on}, mixtures of short-memory components
 \cite{sorbye2017_an}, and heavy-tailed on/off or fractal point-process models
 \cite{garrett1994_analysis,lowen1995_estimation,ryu1998_point} all offer ways
 to make long memory.  They also show the usual engineering tradeoff.  Exact
 Gaussian methods give strong second-order guarantees but can be expensive or
 fragile for some covariance forms.  Spectral methods are fast and transparent
-but approximate.  Renewal and on/off models are interpretable, but finite runs
-can be dominated by missing scales or realization-to-realization variability
-\cite{roughan1999_the}.  A symbolic package should expose these tradeoffs rather
-than hide them behind a constructor named after \(H\).
+but approximate.  Wavelet, Haar, and fast fBm estimators show how much effort
+has gone into measuring fractal parameters from noisy finite records
+\cite{wornell1992_estimation,kaplan1993_fractal,chang2002_fast}; generalized
+fBm/fGn constructions also show that even the numerical vocabulary has variants
+\cite{perrin2001_nth}.  Renewal and on/off models are interpretable, but finite
+runs can be dominated by missing scales or realization-to-realization
+variability \cite{roughan1999_the}.  A symbolic package should expose these
+tradeoffs rather than hide them behind a constructor named after \(H\).
 
 Symbolic LRD appears most clearly in DNA and text.  Voss's DNA analysis
 \cite{voss1992_evolution} is especially important for this paper because it
@@ -462,7 +467,10 @@ this split through
   (\vect{X}_{1:n},Z) = \code{generate\_with\_latent}(g,n;\code{rng}),
 \]
 so validation can ask whether the LRD signal is present in $Z$, lost in $T$, or
-only weakly visible after finite-sample averaging.
+only weakly visible after finite-sample averaging. This finite-record view is
+consistent with the signal-processing literature on estimating fractal and fBm
+parameters from noisy observations
+\cite{wornell1992_estimation,kaplan1993_fractal,chang2002_fast}.
 
 \paragraph{PB1: spectral fGn with quantization.}
 PB1 generates a single latent series $Z_t$ using Paxson's approximate spectral
